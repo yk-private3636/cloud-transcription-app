@@ -1,0 +1,10 @@
+services:
+
+  terraform:
+    container_name: terraform
+    build:
+      context: ./terraform
+    env_file:
+    - ./terraform/.env
+    volumes:
+    - ./terraform/infra:/opt/terrform/infra
