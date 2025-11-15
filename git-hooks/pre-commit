@@ -2,6 +2,8 @@
 
 set -e
 
+trap '[ $? -eq 0 ] || echo "An error occurred. Exiting."' EXIT
+
 echo "Running pre-commit checks..."
 
-docker compose exec -T terraform sh -c 'for dir in $(ls -d ${PWD}/*/); do cd $dir; terraform fmt -check; terraform validate; done'
+docker compose exec -T terraform sh -c 'for dir in $(ls -d ${PWD}/*/); do cd $dir && terraform fmt -check && terraform validate; done'
