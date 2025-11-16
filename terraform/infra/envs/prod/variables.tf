@@ -31,3 +31,8 @@ variable "email_address" {
   type      = string
   sensitive = true
 }
+
+variable "account_id" {
+  type      = string
+  sensitive = true
+}

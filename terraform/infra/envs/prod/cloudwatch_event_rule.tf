@@ -1,0 +1,19 @@
+module "cloudwatch_event_rule" {
+  source = "../../modules/cloudwatch_event_rule"
+
+  name        = local.s3_put_event_name
+  description = "Event rule for S3 put events in ${var.env} environment"
+  event_pattern = jsonencode({
+    source      = ["aws.s3"]
+    detail-type = ["Object Created"]
+    detail = {
+      eventName = ["PutObject"]
+      requestParameters = {
+        bucketName = [module.s3_bucket.bucket]
+        key = [{
+          prefix = "uploads/"
+        }]
+      }
+    }
+  })
+}
