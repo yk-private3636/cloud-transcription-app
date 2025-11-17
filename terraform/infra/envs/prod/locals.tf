@@ -4,4 +4,5 @@ locals {
   sfn_state_machine_name = "${local.name}-state-machine"
   sfn_role_name          = "${local.name}-sfn-role"
   event_role_name        = "${local.name}-event-role"
+  event_policy_name      = "${local.name}-event-policy"
 }

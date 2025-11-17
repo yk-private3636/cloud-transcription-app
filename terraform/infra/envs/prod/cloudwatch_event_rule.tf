@@ -7,12 +7,8 @@ module "cloudwatch_event_rule" {
     source      = ["aws.s3"]
     detail-type = ["Object Created"]
     detail = {
-      eventName = ["PutObject"]
-      requestParameters = {
-        bucketName = [module.s3_bucket.bucket]
-        key = [{
-          prefix = "uploads/"
-        }]
+      bucket = {
+        name = [module.s3_bucket.bucket]
       }
     }
   })
