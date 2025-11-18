@@ -1,5 +1,15 @@
 services:
 
+  event:
+    container_name: event
+    build:
+      context: ./event
+      target: dev
+    env_file:
+      - ./event/.env
+    volumes:
+    - ./event/src:/src
+
   terraform:
     container_name: terraform
     build:
