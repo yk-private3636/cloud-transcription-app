@@ -5,4 +5,5 @@ locals {
   sfn_role_name          = "${local.name}-sfn-role"
   event_role_name        = "${local.name}-event-role"
   event_policy_name      = "${local.name}-event-policy"
+  ecr_repository_name    = local.name
 }
