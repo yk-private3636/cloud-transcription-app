@@ -36,3 +36,8 @@ variable "account_id" {
   type      = string
   sensitive = true
 }
+
+variable "s3_daily_dir_image_tag" {
+  type    = string
+  default = "latest"
+}
