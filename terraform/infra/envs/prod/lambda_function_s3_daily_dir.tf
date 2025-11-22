@@ -7,4 +7,10 @@ module "s3_daily_dir" {
   memory_size   = 128
   timeout       = 180
   architectures = ["x86_64"]
+  environment = {
+    variables = {
+      APP_ENV      = var.env
+      STORAGE_NAME = module.s3_bucket.bucket
+    }
+  }
 }

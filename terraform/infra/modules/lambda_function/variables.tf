@@ -22,3 +22,9 @@ variable "architectures" {
     type = list(string)
 }
 
+variable "environment" {
+    type = object({
+        variables = map(string)
+    })
+}
+

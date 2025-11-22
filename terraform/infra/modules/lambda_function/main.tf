@@ -3,9 +3,13 @@ resource "aws_lambda_function" "main" {
   role          = var.role_arn
   package_type = "Image"
   image_uri     = var.image_uri
-    memory_size = var.memory_size
-    timeout     = var.timeout
-    architectures = var.architectures
+  memory_size = var.memory_size
+  timeout     = var.timeout
+  architectures = var.architectures
+
+  environment {
+    variables = var.environment.variables
+  }
 
   tags = {
     Name = var.name
