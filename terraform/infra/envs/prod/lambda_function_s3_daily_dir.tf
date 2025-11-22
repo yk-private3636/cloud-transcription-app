@@ -1,4 +1,4 @@
-module "s3_daily_dir" {
+module "s3_daily_dir_function" {
   source = "../../modules/lambda_function"
 
   name          = local.lambda_function_s3_daily_dir_name
