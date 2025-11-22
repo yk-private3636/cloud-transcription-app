@@ -11,6 +11,7 @@ module "s3_daily_dir_function" {
     variables = {
       APP_ENV      = var.env
       STORAGE_NAME = module.s3_bucket.bucket
+      APP_TIMEZONE = var.timezone
     }
   }
 }

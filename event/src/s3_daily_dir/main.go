@@ -40,9 +40,15 @@ func main() {
 
 func EventHandler(ctx context.Context) {
 
-	ymd := time.Now().Format(time.DateOnly)
+	loc, err := time.LoadLocation(os.Getenv("APP_TIMEZONE"))
 
-	err := storage.Put(ctx, ymd+"/", nil)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
+	ymd := time.Now().In(loc).Format(time.DateOnly)
+
+	err = storage.Put(ctx, ymd+"/", nil)
 
 	if err != nil {
 		log.Fatal(err.Error())
