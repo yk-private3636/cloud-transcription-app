@@ -14,14 +14,14 @@ import (
 )
 
 var (
-	storage *module.Storage
+	storage module.Storage
 )
 
 func init() {
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 
 	if err != nil {
-		log.Fatalf("unable to load SDK config, %v", err)
+		log.Fatalf(err.Error())
 	}
 
 	storage = module.NewStorage(
