@@ -1,4 +1,4 @@
-module "cloudwatch_event_rule" {
+module "s3_put_event_rule" {
   source = "../../modules/cloudwatch_event_rule"
 
   name        = local.s3_put_event_name

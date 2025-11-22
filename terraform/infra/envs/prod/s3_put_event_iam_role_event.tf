@@ -1,4 +1,4 @@
-module "iam_role_event" {
+module "s3_put_event_iam_role" {
   source = "../../modules/iam_role"
 
   name               = local.event_role_name

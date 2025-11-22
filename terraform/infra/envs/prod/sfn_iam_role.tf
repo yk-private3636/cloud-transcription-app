@@ -1,4 +1,4 @@
-module "iam_role_sfn" {
+module "sfn_iam_role" {
   source = "../../modules/iam_role"
 
   name               = local.sfn_role_name
