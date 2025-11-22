@@ -27,6 +27,10 @@ variable "aws_az" {
   default = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
 }
 
+variable "timezone" {
+  type = string
+}
+
 variable "email_address" {
   type      = string
   sensitive = true
