@@ -7,8 +7,8 @@ import (
 	"os"
 )
 
-func Content(fileName string) []byte {
-	file, err := os.Open("event.json")
+func FileContent(fileName string) []byte {
+	file, err := os.Open(fileName)
 
 	if err != nil {
 		log.Fatal(err.Error())

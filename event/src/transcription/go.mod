@@ -3,9 +3,12 @@ module transcription
 go 1.25.4
 
 require (
-	github.com/aws/aws-lambda-go v1.50.0 // indirect
+	github.com/aws/aws-lambda-go v1.50.0
+	github.com/aws/aws-sdk-go-v2/config v1.32.1
+)
+
+require (
 	github.com/aws/aws-sdk-go-v2 v1.40.0 // indirect
-	github.com/aws/aws-sdk-go-v2/config v1.32.1 // indirect
 	github.com/aws/aws-sdk-go-v2/credentials v1.19.1 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.18.14 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.4.14 // indirect
