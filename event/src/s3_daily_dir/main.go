@@ -40,13 +40,11 @@ func main() {
 
 func EventHandler(ctx context.Context) {
 
-	loc, err := time.LoadLocation(os.Getenv("APP_TIMEZONE"))
+	ymd, err := module.CurrentDateString(os.Getenv("APP_TIMEZONE"), time.DateOnly)
 
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-
-	ymd := time.Now().In(loc).Format(time.DateOnly)
 
 	err = storage.Put(ctx, ymd+"/", nil)
 
