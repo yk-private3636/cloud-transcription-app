@@ -11,7 +11,7 @@ module "iam_role_lambda_s3_daily_dir_policy" {
         Action = [
           "s3:PutObject",
         ]
-        Resource = module.s3_bucket.arn
+        Resource = "${module.s3_bucket.arn}/*"
       }
     ]
   })
