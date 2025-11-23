@@ -45,3 +45,8 @@ variable "s3_daily_dir_image_tag" {
   type    = string
   default = "latest"
 }
+
+variable "transcription_lang" {
+  type    = string
+  default = "ja-JP"
+}

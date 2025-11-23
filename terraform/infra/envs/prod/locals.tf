@@ -12,4 +12,6 @@ locals {
   scheduler_s3_daily_dir_name              = "${local.name}-s3-daily-dir-scheduler"
   scheduler_s3_daily_dir_role_name         = "${local.name}-s3-daily-dir-scheduler-role"
   scheduler_s3_daily_dir_policy_name       = "${local.name}-s3-daily-dir-scheduler-policy"
+  transcription_job_name                   = "${local.name}-transcription-job"
+  sfn_policy_name                          = "${local.name}-sfn-policy"
 }

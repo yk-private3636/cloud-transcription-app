@@ -5,11 +5,20 @@ module "sfn_state_machine" {
   role_arn = module.sfn_iam_role.arn
   asl_definition = jsonencode({
     QueryLanguage = "JSONata"
-    StartAt       = "S3PutEventState"
+    StartAt       = "TranscriptionJob"
     States = {
-      S3PutEventState = {
-        Type = "Pass"
-        End  = true
+      TranscriptionJob = {
+        Type = "Task"
+        Arguments = {
+          TranscriptionJobName = local.transcription_job_name
+          Media = {
+            MediaFileUri = "{% 's3://' & $states.input.detail.bucket.name & '/' & $states.input.detail.object.key %}"
+          }
+          LanguageCode     = var.transcription_lang
+          OutputBucketName = module.s3_bucket.bucket
+        }
+        Resource = "arn:aws:states:::aws-sdk:transcribe:startTranscriptionJob"
+        End      = true
       }
     }
   })
