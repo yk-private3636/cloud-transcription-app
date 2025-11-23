@@ -18,7 +18,7 @@ module "sfn_iam_role_policy" {
           "s3:GetObject",
           "s3:PutObject"
         ]
-        Resource = "${module.s3_bucket.arn}/*"
+        Resource = "${module.s3_bucket_transcribe_input.arn}/*"
         }, {
         Effect = "Allow"
         Action = [

@@ -25,7 +25,7 @@ module "sfn_state_machine" {
             MediaFileUri = "{% 's3://' & $states.input.detail.bucket.name & '/' & $states.input.detail.object.key %}"
           }
           LanguageCode     = var.transcription_lang
-          OutputBucketName = module.s3_bucket.bucket
+          OutputBucketName = module.s3_bucket_transcribe_input.bucket
         }
         End = true
       }

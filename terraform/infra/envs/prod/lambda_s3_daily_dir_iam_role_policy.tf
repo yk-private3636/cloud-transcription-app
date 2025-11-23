@@ -11,7 +11,7 @@ module "lambda_s3_daily_dir_iam_role_policy" {
         Action = [
           "s3:PutObject",
         ]
-        Resource = "${module.s3_bucket.arn}/*"
+        Resource = "${module.s3_bucket_transcribe_input.arn}/*"
       }
     ]
   })

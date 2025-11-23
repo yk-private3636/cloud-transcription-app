@@ -8,7 +8,7 @@ module "s3_put_event_rule" {
     detail-type = ["Object Created"]
     detail = {
       bucket = {
-        name = [module.s3_bucket.bucket]
+        name = [module.s3_bucket_transcribe_input.bucket]
       }
     }
   })
