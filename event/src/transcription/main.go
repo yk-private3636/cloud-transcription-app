@@ -18,8 +18,11 @@ var (
 )
 
 type Event struct {
+	JobName               string `json:"jobName"`
 	MediaBucketURI        string `json:"mediaBucketURI"`
-	DatetimeNanoTimestamp string `json:"DatetimeNanoTimestamp"`
+	OutputBucketName      string `json:"outputBucketName"`
+	Lang                  string `json:"lang"`
+	DatetimeNanoTimestamp string `json:"datetimeNanoTimestamp"`
 }
 
 func init() {
@@ -64,10 +67,10 @@ func EventHandler(ctx context.Context, event json.RawMessage) {
 	}
 
 	job := &module.TranscriberJob{
-		Name:             os.Getenv("TRANSCRIPTION_JOB_NAME") + "_" + strings.Join(matches, ""),
-		LanguageCode:     os.Getenv("APP_LANG"),
+		Name:             param.JobName + "_" + strings.Join(matches, ""),
+		LanguageCode:     param.Lang,
 		MediaBucketURI:   param.MediaBucketURI,
-		OutputBucketName: os.Getenv("STORAGE_NAME"),
+		OutputBucketName: param.OutputBucketName,
 	}
 
 	err = transcriber.StartJob(ctx, job)
