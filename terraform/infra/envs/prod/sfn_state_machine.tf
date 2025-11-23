@@ -5,20 +5,29 @@ module "sfn_state_machine" {
   role_arn = module.sfn_iam_role.arn
   asl_definition = jsonencode({
     QueryLanguage = "JSONata"
-    StartAt       = "TranscriptionJob"
+    StartAt       = "GenNanoTimestamp"
     States = {
+      GenNanoTimestamp = {
+        Type     = "Task"
+        Resource = module.gen_nano_timestamp_function.arn
+        Output = {
+          detail         = "{% $states.input.detail %}",
+          nano_timestamp = "{% $states.result.nano_timestamp %}"
+        }
+        Next = "TranscriptionJob"
+      },
       TranscriptionJob = {
-        Type = "Task"
+        Type     = "Task"
+        Resource = "arn:aws:states:::aws-sdk:transcribe:startTranscriptionJob"
         Arguments = {
-          TranscriptionJobName = local.transcription_job_name
+          TranscriptionJobName = "{% '${local.transcription_job_name}' & '_' & $states.input.nano_timestamp %}"
           Media = {
             MediaFileUri = "{% 's3://' & $states.input.detail.bucket.name & '/' & $states.input.detail.object.key %}"
           }
           LanguageCode     = var.transcription_lang
           OutputBucketName = module.s3_bucket.bucket
         }
-        Resource = "arn:aws:states:::aws-sdk:transcribe:startTranscriptionJob"
-        End      = true
+        End = true
       }
     }
   })

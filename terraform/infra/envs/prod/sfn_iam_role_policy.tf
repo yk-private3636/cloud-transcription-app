@@ -19,6 +19,12 @@ module "sfn_iam_role_policy" {
           "s3:PutObject"
         ]
         Resource = "${module.s3_bucket.arn}/*"
+        }, {
+        Effect = "Allow"
+        Action = [
+          "lambda:InvokeFunction",
+        ]
+        Resource = "${module.gen_nano_timestamp_function.arn}"
       }
     ]
   })
