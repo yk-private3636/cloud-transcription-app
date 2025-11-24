@@ -15,6 +15,7 @@ locals {
   scheduler_s3_daily_dir_role_name               = "${local.name}-s3-daily-dir-scheduler-role"
   scheduler_s3_daily_dir_policy_name             = "${local.name}-s3-daily-dir-scheduler-policy"
   transcription_job_name                         = "${local.name}-transcription-job"
+  transcription_output_file                      = "transcription.json"
   sfn_policy_name                                = "${local.name}-sfn-policy"
   lambda_function_gen_nano_timestamp_name        = "${local.name}-gen-nano-timestamp"
   lambda_function_gen_nano_timestamp_role_name   = "${local.name}-lambda-gen-nano-timestamp-role"

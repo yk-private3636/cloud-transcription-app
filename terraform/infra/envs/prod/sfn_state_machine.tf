@@ -26,6 +26,7 @@ module "sfn_state_machine" {
           }
           LanguageCode     = var.transcription_lang
           OutputBucketName = module.s3_bucket_transcribe_output.bucket
+          OutputKey        = "{% $states.input.detail.object.key & '/' & $states.input.nano_timestamp & '/' & '${local.transcription_output_file}' %}"
         }
         End = true
       }
