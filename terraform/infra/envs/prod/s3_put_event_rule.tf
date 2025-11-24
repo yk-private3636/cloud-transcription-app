@@ -9,6 +9,14 @@ module "s3_put_event_rule" {
     detail = {
       bucket = {
         name = [module.s3_bucket_transcribe_input.bucket]
+      },
+      object = {
+        key = [{
+          "wildcard" = "*/*.*"
+        }],
+        size = [{
+          "numeric" = [">", 0]
+        }]
       }
     }
   })
