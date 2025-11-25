@@ -51,6 +51,11 @@ variable "gen_nano_timestamp_image_tag" {
   default = "latest"
 }
 
+variable "s3_content_image_tag" {
+  type    = string
+  default = "latest"
+}
+
 variable "transcription_lang" {
   type    = string
   default = "ja-JP"
