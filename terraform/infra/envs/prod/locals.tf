@@ -20,7 +20,4 @@ locals {
   lambda_function_gen_nano_timestamp_name        = "${local.name}-gen-nano-timestamp"
   lambda_function_gen_nano_timestamp_role_name   = "${local.name}-lambda-gen-nano-timestamp-role"
   lambda_function_gen_nano_timestamp_policy_name = "${local.name}-lambda-gen-nano-timestamp-policy"
-  lambda_function_s3_content_name                = "${local.name}-s3-content"
-  lambda_function_s3_content_role_name           = "${local.name}-lambda-s3-content-role"
-  lambda_function_s3_content_policy_name         = "${local.name}-lambda-s3-content-policy"
 }
