@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"gen_nano_timestamp/module"
-	"log"
 	"os"
 	"strings"
 
@@ -27,7 +26,7 @@ func EventHandler(ctx context.Context) (Output, error) {
 	ts, err := module.GenerateNanoTimestamp(os.Getenv("APP_TIMEZONE"))
 
 	if err != nil {
-		log.Fatal(err.Error())
+		return Output{}, err
 	}
 
 	return Output{

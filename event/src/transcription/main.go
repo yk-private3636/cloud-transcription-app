@@ -47,19 +47,19 @@ func main() {
 	}
 }
 
-func EventHandler(ctx context.Context, event json.RawMessage) {
+func EventHandler(ctx context.Context, event json.RawMessage) error {
 
 	var param Event
 	err := json.Unmarshal(event, &param)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	matches, err := module.ExtractByRegex(param.DatetimeNanoTimestamp, `\d+`)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
 	job := &module.TranscriberJob{
@@ -73,6 +73,8 @@ func EventHandler(ctx context.Context, event json.RawMessage) {
 	err = transcriber.StartJob(ctx, job)
 
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
+
+	return nil
 }

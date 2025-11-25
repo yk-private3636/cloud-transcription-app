@@ -54,13 +54,13 @@ func EventHandler(ctx context.Context, event json.RawMessage) (Output, error) {
 	err := json.Unmarshal(event, &param)
 
 	if err != nil {
-		log.Fatal(err)
+		return Output{}, err
 	}
 
 	content, err := storage.GetContents(ctx, param.Bucket, param.Key)
 
 	if err != nil {
-		log.Fatal(err)
+		return Output{}, err
 	}
 
 	return Output{

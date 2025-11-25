@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 	"s3_daily_dir/module"
@@ -34,21 +35,23 @@ func main() {
 	if strings.ToLower(os.Getenv("APP_ENV")) == "prod" {
 		lambda.Start(EventHandler)
 	} else {
-		EventHandler(context.Background())
+		fmt.Println(EventHandler(context.Background()))
 	}
 }
 
-func EventHandler(ctx context.Context) {
+func EventHandler(ctx context.Context) error {
 
 	ymd, err := module.CurrentDateString(os.Getenv("APP_TIMEZONE"), time.DateOnly)
 
 	if err != nil {
-		log.Fatal(err.Error())
+		return err
 	}
 
 	err = storage.Put(ctx, ymd+"/", nil)
 
 	if err != nil {
-		log.Fatal(err.Error())
+		return err
 	}
+
+	return nil
 }
