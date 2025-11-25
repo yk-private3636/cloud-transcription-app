@@ -21,6 +21,7 @@ type Event struct {
 	JobName               string `json:"jobName"`
 	MediaBucketURI        string `json:"mediaBucketURI"`
 	OutputBucketName      string `json:"outputBucketName"`
+	OutputKey             string `json:"outputKey"`
 	Lang                  string `json:"lang"`
 	DatetimeNanoTimestamp string `json:"datetimeNanoTimestamp"`
 }
@@ -47,14 +48,9 @@ func main() {
 }
 
 func EventHandler(ctx context.Context, event json.RawMessage) {
-	bson, err := event.MarshalJSON()
-
-	if err != nil {
-		log.Fatal(err)
-	}
 
 	var param Event
-	err = json.Unmarshal(bson, &param)
+	err := json.Unmarshal(event, &param)
 
 	if err != nil {
 		log.Fatal(err)
@@ -71,6 +67,7 @@ func EventHandler(ctx context.Context, event json.RawMessage) {
 		LanguageCode:     param.Lang,
 		MediaBucketURI:   param.MediaBucketURI,
 		OutputBucketName: param.OutputBucketName,
+		OutputKey:        param.OutputKey,
 	}
 
 	err = transcriber.StartJob(ctx, job)

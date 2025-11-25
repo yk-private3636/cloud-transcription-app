@@ -21,6 +21,7 @@ type TranscriberJob struct {
 	LanguageCode     string
 	MediaBucketURI   string
 	OutputBucketName string
+	OutputKey        string
 }
 
 func NewTranscriber(client *transcribe.Client) Transcriber {
@@ -37,6 +38,7 @@ func (t *transcriber) StartJob(ctx context.Context, job *TranscriberJob) error {
 			MediaFileUri: aws.String(job.MediaBucketURI),
 		},
 		OutputBucketName: aws.String(job.OutputBucketName),
+		OutputKey:        aws.String(job.OutputKey),
 	})
 
 	return err
