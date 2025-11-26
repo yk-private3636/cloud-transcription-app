@@ -2,6 +2,7 @@ locals {
   name                                           = "${var.env}-${var.project_name}"
   s3_bucket_transcribe_input_name                = "${local.name}-s3-transcribe-input"
   s3_bucket_transcribe_output_name               = "${local.name}-s3-transcribe-output"
+  s3_bucket_bedrock_output_name                  = "${local.name}-s3-bedrock-output"
   s3_put_event_name                              = "${local.name}-s3-put-event"
   sfn_state_machine_name                         = "${local.name}-state-machine"
   sfn_role_name                                  = "${local.name}-sfn-role"

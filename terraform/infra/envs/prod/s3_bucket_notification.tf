@@ -11,3 +11,10 @@ module "s3_bucket_notification_transcribe_output" {
   bucket_id   = module.s3_bucket_transcribe_output.id
   eventbridge = false
 }
+
+module "s3_bucket_notification_bedrock_output" {
+  source = "../../modules/s3_bucket_notification"
+
+  bucket_id   = module.s3_bucket_bedrock_output.id
+  eventbridge = false
+}
