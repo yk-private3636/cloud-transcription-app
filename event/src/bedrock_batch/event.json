@@ -1,0 +1,8 @@
+{
+  "jobName": "",
+  "modelId": "",
+  "roleArnId": "",
+  "inputBucketUri": "",
+  "outputBucketUri": "",
+  "timeoutInHours": 24
+}
