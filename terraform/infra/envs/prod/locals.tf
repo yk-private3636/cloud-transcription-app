@@ -20,6 +20,4 @@ locals {
   lambda_function_gen_nano_timestamp_name        = "${local.name}-gen-nano-timestamp"
   lambda_function_gen_nano_timestamp_role_name   = "${local.name}-lambda-gen-nano-timestamp-role"
   lambda_function_gen_nano_timestamp_policy_name = "${local.name}-lambda-gen-nano-timestamp-policy"
-  bedrock_role_name                              = "${local.name}-bedrock-role"
-  bedrock_role_policy_name                       = "${local.name}-bedrock-role-policy"
 }
