@@ -13,5 +13,10 @@ data "aws_iam_policy_document" "lambda_transcription_result_reader_assume_role_p
       identifiers = ["lambda.amazonaws.com"]
     }
     actions = ["sts:AssumeRole"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [var.account_id]
+    }
   }
 }

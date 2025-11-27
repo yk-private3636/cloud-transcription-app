@@ -13,5 +13,10 @@ data "aws_iam_policy_document" "lambda_gen_nano_timestamp_assume_role_policy" {
       identifiers = ["lambda.amazonaws.com"]
     }
     actions = ["sts:AssumeRole"]
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = [var.account_id]
+    }
   }
 }
