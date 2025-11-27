@@ -29,7 +29,10 @@ module "sfn_iam_role_policy" {
         Action = [
           "lambda:InvokeFunction",
         ]
-        Resource = "${module.gen_nano_timestamp_function.arn}"
+        Resource = [
+          module.gen_nano_timestamp_function.arn,
+          module.transcription_result_reader_function.arn
+        ]
       }
     ]
   })

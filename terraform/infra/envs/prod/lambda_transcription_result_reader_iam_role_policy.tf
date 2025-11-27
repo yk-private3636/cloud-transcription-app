@@ -9,10 +9,16 @@ module "lambda_transcription_result_reader_iam_role_policy" {
       {
         Effect = "Allow"
         Action = [
-          "s3:GetObject",
-          "s3:ListBucket",
+          "s3:GetObject"
         ]
         Resource = "${module.s3_bucket_transcribe_output.arn}/*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:ListBucket",
+        ]
+        Resource = "${module.s3_bucket_transcribe_output.arn}"
       }
     ]
   })

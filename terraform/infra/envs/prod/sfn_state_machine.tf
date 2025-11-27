@@ -28,6 +28,19 @@ module "sfn_state_machine" {
           OutputBucketName = module.s3_bucket_transcribe_output.bucket
           OutputKey        = "{% $states.input.detail.object.key & '/' & $states.input.nano_timestamp & '/' & '${local.transcription_output_file}' %}"
         }
+        Output = {
+          outputBucketName = module.s3_bucket_transcribe_output.bucket
+          outputKey        = "{% $states.input.detail.object.key & '/' & $states.input.nano_timestamp & '/' & '${local.transcription_output_file}' %}"
+        }
+        Next = "TranscriptionResultReader"
+      }
+      TranscriptionResultReader = {
+        Type     = "Task"
+        Resource = module.transcription_result_reader_function.arn
+        Arguments = {
+          bucket = "{% $states.input.outputBucketName %}"
+          key    = "{% $states.input.outputKey %}"
+        }
         End = true
       }
     }
