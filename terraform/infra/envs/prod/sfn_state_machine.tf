@@ -73,6 +73,27 @@ module "sfn_state_machine" {
           bucket = "{% $states.input.outputBucketName %}"
           key    = "{% $states.input.outputKey %}"
         }
+        Output = {
+          transcriptionText = "{% $states.result.transcript %}"
+        }
+        Next = "BedrockConverse"
+      }
+      BedrockConverse = {
+        Type     = "Task"
+        Resource = "arn:aws:states:::aws-sdk:bedrockruntime:converse"
+        Arguments = {
+          ModelId = var.bedrock_model_id
+          Messages = [
+            {
+              Role = "user",
+              Content = [
+                {
+                  Text = "{% 'STARTという文字列から音声を文字おこしした結果なんだけど、要点を箇条書きでまとめてほしい' & ' START ' & $states.input.transcriptionText %}"
+                }
+              ]
+            }
+          ]
+        }
         End = true
       }
     }

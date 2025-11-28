@@ -34,6 +34,12 @@ module "sfn_iam_role_policy" {
           module.transcription_job_reader_function.arn,
           module.transcription_result_reader_function.arn
         ]
+        }, {
+        Effect = "Allow"
+        Action = [
+          "bedrock:InvokeModel"
+        ]
+        Resource = "*"
       }
     ]
   })

@@ -65,3 +65,7 @@ variable "transcription_lang" {
   type    = string
   default = "ja-JP"
 }
+
+variable "bedrock_model_id" {
+  type = string
+}
