@@ -4,8 +4,9 @@ module "sfn_state_machine" {
   name     = local.sfn_state_machine_name
   role_arn = module.sfn_iam_role.arn
   asl_definition = jsonencode({
-    QueryLanguage = "JSONata"
-    StartAt       = "GenNanoTimestamp"
+    QueryLanguage  = "JSONata"
+    StartAt        = "GenNanoTimestamp"
+    TimeoutSeconds = 1200
     States = {
       GenNanoTimestamp = {
         Type     = "Task"
