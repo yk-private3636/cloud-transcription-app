@@ -36,6 +36,11 @@ module "sfn_state_machine" {
         }
         Next = "TranscriptionJobReader"
       }
+      WaitTranscriptionJobReader = {
+        Type    = "Wait"
+        Seconds = 10
+        Next    = "TranscriptionJobReader"
+      }
       TranscriptionJobReader = {
         Type     = "Task"
         Resource = module.transcription_job_reader_function.arn
@@ -57,7 +62,7 @@ module "sfn_state_machine" {
           Next      = "TranscriptionResultReader"
           }, {
           Condition = "{% $states.input.jobStatus != 'FAILED' %}"
-          Next      = "TranscriptionJobReader"
+          Next      = "WaitTranscriptionJobReader"
           }
         ]
       }
