@@ -11,7 +11,7 @@ import (
 )
 
 type Output struct {
-	NanoTimestamp int64 `json:"nano_timestamp"`
+	NanoTimestamp int64 `json:"nanoTimestamp"`
 }
 
 func main() {
