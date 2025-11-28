@@ -23,4 +23,7 @@ locals {
   lambda_function_transcription_result_reader_name        = "${local.name}-trans-result-reader"
   lambda_function_transcription_result_reader_role_name   = "${local.name}-lambda-trans-result-reader-role"
   lambda_function_transcription_result_reader_policy_name = "${local.name}-lambda-trans-result-reader-policy"
+  lambda_function_transcription_job_reader_name           = "${local.name}-trans-job-reader"
+  lambda_function_transcription_job_reader_role_name      = "${local.name}-lambda-trans-job-reader-role"
+  lambda_function_transcription_job_reader_policy_name    = "${local.name}-lambda-trans-job-reader-policy"
 }

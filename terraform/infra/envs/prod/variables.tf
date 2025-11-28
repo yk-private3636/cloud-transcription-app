@@ -56,6 +56,11 @@ variable "transcription_result_reader_image_tag" {
   default = "latest"
 }
 
+variable "transcription_job_reader_image_tag" {
+  type    = string
+  default = "latest"
+}
+
 variable "transcription_lang" {
   type    = string
   default = "ja-JP"
