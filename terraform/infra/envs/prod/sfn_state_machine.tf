@@ -39,7 +39,7 @@ module "sfn_state_machine" {
       }
       WaitTranscriptionJobReader = {
         Type    = "Wait"
-        Seconds = 10
+        Seconds = 20
         Next    = "TranscriptionJobReader"
       }
       TranscriptionJobReader = {
