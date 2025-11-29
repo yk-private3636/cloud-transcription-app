@@ -1,4 +1,4 @@
-module "ses_template" {
+module "ses_success_template" {
   source = "../../modules/ses_template"
 
   name    = local.ses_template_name

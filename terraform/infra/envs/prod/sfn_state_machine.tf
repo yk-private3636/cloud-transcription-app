@@ -101,9 +101,9 @@ module "sfn_state_machine" {
           key            = "{% $states.input.key %}"
           bedrockContent = "{% $states.result.Output.Message.Content[0].Text %}"
         }
-        Next = "SendMail"
+        Next = "SuccessSendMail"
       }
-      SendMail = {
+      SuccessSendMail = {
         Type     = "Task"
         Resource = "arn:aws:states:::aws-sdk:sesv2:sendEmail"
         Arguments = {
@@ -113,8 +113,8 @@ module "sfn_state_machine" {
           }
           Content = {
             Template = {
-              TemplateArn  = module.ses_template.arn
-              TemplateName = module.ses_template.name
+              TemplateArn  = module.ses_success_template.arn
+              TemplateName = module.ses_success_template.name
               TemplateData = "{% '{' & '\"fileName\":' & '\"' & $states.input.key & '\"' & '}' %}"
               Attachments = [{
                 FileName    = "{% 'summary_' & $split($states.input.key, \"/\")[$count($split($states.input.key, \"/\")) - 1] & '.txt' %}"
