@@ -40,6 +40,13 @@ module "sfn_iam_role_policy" {
           "bedrock:InvokeModel"
         ]
         Resource = "*"
+        }, {
+        Effect = "Allow"
+        Action = [
+          "ses:SendEmail",
+          "ses:SendTemplatedEmail"
+        ]
+        Resource = "*"
       }
     ]
   })

@@ -30,6 +30,7 @@ module "sfn_state_machine" {
           OutputKey        = "{% $states.input.detail.object.key & '/' & $states.input.nanoTimestamp & '/' & '${local.transcription_output_file}' %}"
         }
         Output = {
+          inputKey         = "{% $states.input.detail.object.key %}"
           outputBucketName = module.s3_bucket_transcribe_output.bucket
           outputKey        = "{% $states.input.detail.object.key & '/' & $states.input.nanoTimestamp & '/' & '${local.transcription_output_file}' %}"
           nanoTimestamp    = "{% $states.input.nanoTimestamp %}"
@@ -50,6 +51,7 @@ module "sfn_state_machine" {
         Output = {
           jobStatus        = "{% $states.result.jobStatus %}"
           nanoTimestamp    = "{% $states.input.nanoTimestamp %}"
+          inputKey         = "{% $states.input.inputKey %}"
           outputBucketName = "{% $states.input.outputBucketName %}"
           outputKey        = "{% $states.input.outputKey %}"
         }
@@ -74,6 +76,7 @@ module "sfn_state_machine" {
           key    = "{% $states.input.outputKey %}"
         }
         Output = {
+          key               = "{% $states.input.inputKey %}"
           transcriptionText = "{% $states.result.transcript %}"
         }
         Next = "BedrockConverse"
@@ -93,6 +96,35 @@ module "sfn_state_machine" {
               ]
             }
           ]
+        }
+        Output = {
+          key            = "{% $states.input.key %}"
+          bedrockContent = "{% $states.result.Output.Message.Content[0].Text %}"
+        }
+        Next = "SendMail"
+      }
+      SendMail = {
+        Type     = "Task"
+        Resource = "arn:aws:states:::aws-sdk:sesv2:sendEmail"
+        Arguments = {
+          FromEmailAddress = var.email_address
+          Destination = {
+            ToAddresses = [var.email_address]
+          }
+          Content = {
+            Template = {
+              TemplateArn  = module.ses_template.arn
+              TemplateName = module.ses_template.name
+              TemplateData = jsonencode({
+                fileName = "{% $states.input.key %}"
+              })
+              Attachments = [{
+                FileName    = "{% 'summary_' & $states.input.key & '.txt' %}"
+                ContentType = "text/plain"
+                RawContent  = "{% $states.input.bedrockContent %}"
+              }]
+            }
+          }
         }
         End = true
       }
