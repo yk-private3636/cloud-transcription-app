@@ -91,7 +91,7 @@ module "sfn_state_machine" {
               Role = "user",
               Content = [
                 {
-                  Text = "{% 'STARTという文字列から音声を文字おこしした結果なんだけど、要点を箇条書きでまとめてほしい' & ' START ' & $states.input.transcriptionText %}"
+                  Text = "{% 'STARTという文字列から音声を文字おこしした結果なんだけど、要点を箇条書きでまとめてほしいのとそのまとめた内容だけを出力してほしい。(了解しましたとかの文章は不要です)' & ' START ' & $states.input.transcriptionText %}"
                 }
               ]
             }
