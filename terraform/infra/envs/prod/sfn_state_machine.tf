@@ -117,7 +117,7 @@ module "sfn_state_machine" {
               TemplateName = module.ses_template.name
               TemplateData = "{% '{' & '\"fileName\":' & '\"' & $states.input.key & '\"' & '}' %}"
               Attachments = [{
-                FileName    = "{% 'summary_' & $states.input.key & '.txt' %}"
+                FileName    = "{% 'summary_' & $split($states.input.key, \"/\")[$count($split($states.input.key, \"/\")) - 1] & '.txt' %}"
                 ContentType = "text/plain"
                 RawContent  = "{% $states.input.bedrockContent %}"
               }]
