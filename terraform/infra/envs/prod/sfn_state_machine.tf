@@ -115,9 +115,7 @@ module "sfn_state_machine" {
             Template = {
               TemplateArn  = module.ses_template.arn
               TemplateName = module.ses_template.name
-              TemplateData = jsonencode({
-                fileName = "{% $states.input.key %}"
-              })
+              TemplateData = "{% '{' & '\"fileName\":' & '\"' & $states.input.key & '\"' & '}' %}"
               Attachments = [{
                 FileName    = "{% 'summary_' & $states.input.key & '.txt' %}"
                 ContentType = "text/plain"
