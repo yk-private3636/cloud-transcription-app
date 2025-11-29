@@ -6,7 +6,7 @@ module "sfn_state_machine" {
   asl_definition = jsonencode({
     QueryLanguage  = "JSONata"
     StartAt        = "GenNanoTimestamp"
-    TimeoutSeconds = 1200
+    TimeoutSeconds = 900
     States = {
       GenNanoTimestamp = {
         Type     = "Task"
