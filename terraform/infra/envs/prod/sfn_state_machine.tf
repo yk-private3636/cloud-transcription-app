@@ -15,6 +15,12 @@ module "sfn_state_machine" {
           detail        = "{% $states.input.detail %}",
           nanoTimestamp = "{% $states.result.nanoTimestamp %}"
         }
+        Retry = [{
+          ErrorEquals     = ["States.ALL"]
+          IntervalSeconds = 3
+          MaxAttempts     = 3
+          BackoffRate     = 1
+        }]
         Next = "TranscriptionJob"
       },
       TranscriptionJob = {
@@ -35,6 +41,12 @@ module "sfn_state_machine" {
           outputKey        = "{% $states.input.detail.object.key & '/' & $states.input.nanoTimestamp & '/' & '${local.transcription_output_file}' %}"
           nanoTimestamp    = "{% $states.input.nanoTimestamp %}"
         }
+        Retry = [{
+          ErrorEquals     = ["States.ALL"]
+          IntervalSeconds = 3
+          MaxAttempts     = 3
+          BackoffRate     = 1
+        }]
         Next = "TranscriptionJobReader"
       }
       WaitTranscriptionJobReader = {
@@ -55,6 +67,13 @@ module "sfn_state_machine" {
           outputBucketName = "{% $states.input.outputBucketName %}"
           outputKey        = "{% $states.input.outputKey %}"
         }
+        Retry = [{
+          ErrorEquals     = ["States.ALL"]
+          IntervalSeconds = 3
+          MaxAttempts     = 5
+          MaxDelaySeconds = 5
+          BackoffRate     = 3
+        }]
         Next = "CheckTranscriptionStatus"
       }
       CheckTranscriptionStatus = {
@@ -79,6 +98,13 @@ module "sfn_state_machine" {
           key               = "{% $states.input.inputKey %}"
           transcriptionText = "{% $states.result.transcript %}"
         }
+        Retry = [{
+          ErrorEquals     = ["States.ALL"]
+          IntervalSeconds = 3
+          MaxAttempts     = 5
+          MaxDelaySeconds = 5
+          BackoffRate     = 3
+        }]
         Next = "BedrockConverse"
       }
       BedrockConverse = {
@@ -101,6 +127,13 @@ module "sfn_state_machine" {
           key            = "{% $states.input.key %}"
           bedrockContent = "{% $states.result.Output.Message.Content[0].Text %}"
         }
+        Retry = [{
+          ErrorEquals     = ["States.ALL"]
+          IntervalSeconds = 3
+          MaxAttempts     = 5
+          MaxDelaySeconds = 5
+          BackoffRate     = 3
+        }]
         Next = "SuccessSendMail"
       }
       SuccessSendMail = {
@@ -124,6 +157,12 @@ module "sfn_state_machine" {
             }
           }
         }
+        Retry = [{
+          ErrorEquals     = ["States.ALL"]
+          IntervalSeconds = 5
+          MaxAttempts     = 2
+          BackoffRate     = 1
+        }]
         End = true
       }
     }
