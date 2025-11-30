@@ -11,9 +11,10 @@ module "sfn_state_machine" {
       GenNanoTimestamp = {
         Type     = "Task"
         Resource = module.gen_nano_timestamp_function.arn
-        Output = {
-          detail        = "{% $states.input.detail %}",
-          nanoTimestamp = "{% $states.result.nanoTimestamp %}"
+        Assign = {
+          nanoTimestamp   = "{% $states.result.nanoTimestamp %}"
+          eventBucketName = "{% $states.input.detail.bucket.name %}"
+          eventBucketKey  = "{% $states.input.detail.object.key %}"
         }
         Retry = [{
           ErrorEquals     = ["States.ALL"]
@@ -27,19 +28,18 @@ module "sfn_state_machine" {
         Type     = "Task"
         Resource = "arn:aws:states:::aws-sdk:transcribe:startTranscriptionJob"
         Arguments = {
-          TranscriptionJobName = "{% '${local.transcription_job_name}' & '_' & $states.input.nanoTimestamp %}"
+          TranscriptionJobName = "{% '${local.transcription_job_name}' & '_' & $nanoTimestamp %}"
           Media = {
-            MediaFileUri = "{% 's3://' & $states.input.detail.bucket.name & '/' & $states.input.detail.object.key %}"
+            MediaFileUri = "{% 's3://' & $eventBucketName & '/' & $eventBucketKey %}"
           }
           LanguageCode     = var.transcription_lang
           OutputBucketName = module.s3_bucket_transcribe_output.bucket
-          OutputKey        = "{% $states.input.detail.object.key & '/' & $states.input.nanoTimestamp & '/' & '${local.transcription_output_file}' %}"
+          OutputKey        = "{% $eventBucketKey & '/' & $nanoTimestamp & '/' & '${local.transcription_output_file}' %}"
         }
-        Output = {
-          inputKey         = "{% $states.input.detail.object.key %}"
-          outputBucketName = module.s3_bucket_transcribe_output.bucket
-          outputKey        = "{% $states.input.detail.object.key & '/' & $states.input.nanoTimestamp & '/' & '${local.transcription_output_file}' %}"
-          nanoTimestamp    = "{% $states.input.nanoTimestamp %}"
+        Assign = {
+          transcriptionJobName = "{% '${local.transcription_job_name}' & '_' & $nanoTimestamp %}"
+          outputBucketName     = module.s3_bucket_transcribe_output.bucket
+          outputBucketKey      = "{% $eventBucketKey & '/' & $nanoTimestamp & '/' & '${local.transcription_output_file}' %}"
         }
         Retry = [{
           ErrorEquals     = ["States.ALL"]
@@ -58,14 +58,10 @@ module "sfn_state_machine" {
         Type     = "Task"
         Resource = module.transcription_job_reader_function.arn
         Arguments = {
-          jobName = "{% '${local.transcription_job_name}' & '_' & $states.input.nanoTimestamp %}"
+          jobName = "{% $transcriptionJobName %}"
         }
         Output = {
-          jobStatus        = "{% $states.result.jobStatus %}"
-          nanoTimestamp    = "{% $states.input.nanoTimestamp %}"
-          inputKey         = "{% $states.input.inputKey %}"
-          outputBucketName = "{% $states.input.outputBucketName %}"
-          outputKey        = "{% $states.input.outputKey %}"
+          transcriptionJobStatus = "{% $states.result.jobStatus %}"
         }
         Retry = [{
           ErrorEquals     = ["States.ALL"]
@@ -74,15 +70,15 @@ module "sfn_state_machine" {
           MaxDelaySeconds = 5
           BackoffRate     = 3
         }]
-        Next = "CheckTranscriptionStatus"
+        Next = "CheckTranscriptionJobStatus"
       }
-      CheckTranscriptionStatus = {
+      CheckTranscriptionJobStatus = {
         Type = "Choice"
         Choices = [{
-          Condition = "{% $states.input.jobStatus = 'COMPLETED' %}"
+          Condition = "{% $states.input.transcriptionJobStatus = 'COMPLETED' %}"
           Next      = "TranscriptionResultReader"
           }, {
-          Condition = "{% $states.input.jobStatus != 'FAILED' %}"
+          Condition = "{% $states.input.transcriptionJobStatus != 'FAILED' %}"
           Next      = "WaitTranscriptionJobReader"
           }
         ]
@@ -91,11 +87,10 @@ module "sfn_state_machine" {
         Type     = "Task"
         Resource = module.transcription_result_reader_function.arn
         Arguments = {
-          bucket = "{% $states.input.outputBucketName %}"
-          key    = "{% $states.input.outputKey %}"
+          bucket = "{% $outputBucketName %}"
+          key    = "{% $outputBucketKey %}"
         }
         Output = {
-          key               = "{% $states.input.inputKey %}"
           transcriptionText = "{% $states.result.transcript %}"
         }
         Retry = [{
@@ -124,7 +119,6 @@ module "sfn_state_machine" {
           ]
         }
         Output = {
-          key            = "{% $states.input.key %}"
           bedrockContent = "{% $states.result.Output.Message.Content[0].Text %}"
         }
         Retry = [{
@@ -148,9 +142,9 @@ module "sfn_state_machine" {
             Template = {
               TemplateArn  = module.ses_success_template.arn
               TemplateName = module.ses_success_template.name
-              TemplateData = "{% '{' & '\"fileName\":' & '\"' & $states.input.key & '\"' & '}' %}"
+              TemplateData = "{% '{' & '\"fileName\":' & '\"' & $eventBucketKey & '\"' & '}' %}"
               Attachments = [{
-                FileName    = "{% 'summary_' & $split($states.input.key, \"/\")[$count($split($states.input.key, \"/\")) - 1] & '.txt' %}"
+                FileName    = "{% 'summary_' & $split($eventBucketKey, \"/\")[$count($split($eventBucketKey, \"/\")) - 1] & '.txt' %}"
                 ContentType = "text/plain"
                 RawContent  = "{% $states.input.bedrockContent %}"
               }]
