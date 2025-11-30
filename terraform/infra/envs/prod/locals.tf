@@ -26,5 +26,6 @@ locals {
   lambda_function_transcription_job_reader_name           = "${local.name}-trans-job-reader"
   lambda_function_transcription_job_reader_role_name      = "${local.name}-lambda-trans-job-reader-role"
   lambda_function_transcription_job_reader_policy_name    = "${local.name}-lambda-trans-job-reader-policy"
-  ses_template_name                                       = "${local.name}-ses-template"
+  ses_success_template_name                               = "${local.name}-ses-success-template"
+  ses_fail_template_name                                  = "${local.name}-ses-fail-template"
 }
