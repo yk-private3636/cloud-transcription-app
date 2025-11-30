@@ -22,6 +22,13 @@ module "sfn_state_machine" {
           MaxAttempts     = 3
           BackoffRate     = 1
         }]
+        Catch = [{
+          ErrorEquals = ["States.ALL"]
+          Output = {
+            cause = "{% $states.errorOutput.Cause %}"
+          }
+          Next = "FailureSendMail"
+        }]
         Next = "TranscriptionJob"
       },
       TranscriptionJob = {
@@ -47,6 +54,13 @@ module "sfn_state_machine" {
           MaxAttempts     = 3
           BackoffRate     = 1
         }]
+        Catch = [{
+          ErrorEquals = ["States.ALL"]
+          Output = {
+            cause = "{% $states.errorOutput.Cause %}"
+          }
+          Next = "FailureSendMail"
+        }]
         Next = "TranscriptionJobReader"
       }
       WaitTranscriptionJobReader = {
@@ -70,6 +84,13 @@ module "sfn_state_machine" {
           MaxDelaySeconds = 5
           BackoffRate     = 3
         }]
+        Catch = [{
+          ErrorEquals = ["States.ALL"]
+          Output = {
+            cause = "{% $states.errorOutput.Cause %}"
+          }
+          Next = "FailureSendMail"
+        }]
         Next = "CheckTranscriptionJobStatus"
       }
       CheckTranscriptionJobStatus = {
@@ -78,7 +99,10 @@ module "sfn_state_machine" {
           Condition = "{% $states.input.transcriptionJobStatus = 'COMPLETED' %}"
           Next      = "TranscriptionResultReader"
           }, {
-          Condition = "{% $states.input.transcriptionJobStatus != 'FAILED' %}"
+          Condition = "{% $states.input.transcriptionJobStatus = 'FAILED' %}"
+          Next      = "TranscriptionJobFailureStatus"
+          }, {
+          Condition = "{% $states.input.transcriptionJobStatus != 'COMPLETED' and $states.input.transcriptionJobStatus != 'FAILED' %}"
           Next      = "WaitTranscriptionJobReader"
           }
         ]
@@ -99,6 +123,13 @@ module "sfn_state_machine" {
           MaxAttempts     = 5
           MaxDelaySeconds = 5
           BackoffRate     = 3
+        }]
+        Catch = [{
+          ErrorEquals = ["States.ALL"]
+          Output = {
+            cause = "{% $states.errorOutput.Cause %}"
+          }
+          Next = "FailureSendMail"
         }]
         Next = "BedrockConverse"
       }
@@ -128,6 +159,13 @@ module "sfn_state_machine" {
           MaxDelaySeconds = 5
           BackoffRate     = 3
         }]
+        Catch = [{
+          ErrorEquals = ["States.ALL"]
+          Output = {
+            cause = "{% $states.errorOutput.Cause %}"
+          }
+          Next = "FailureSendMail"
+        }]
         Next = "SuccessSendMail"
       }
       SuccessSendMail = {
@@ -148,6 +186,44 @@ module "sfn_state_machine" {
                 ContentType = "text/plain"
                 RawContent  = "{% $states.input.bedrockContent %}"
               }]
+            }
+          }
+        }
+        Retry = [{
+          ErrorEquals     = ["States.ALL"]
+          IntervalSeconds = 5
+          MaxAttempts     = 2
+          BackoffRate     = 1
+        }]
+        Catch = [{
+          ErrorEquals = ["States.ALL"]
+          Output = {
+            cause = "{% $states.errorOutput.Cause %}"
+          }
+          Next = "FailureSendMail"
+        }]
+        End = true
+      }
+      TranscriptionJobFailureStatus = {
+        Type = "Pass"
+        Output = {
+          cause = "{% 'Transcription job failed. Please check the input media file.' %}"
+        }
+        Next = "FailureSendMail"
+      }
+      FailureSendMail = {
+        Type     = "Task"
+        Resource = "arn:aws:states:::aws-sdk:sesv2:sendEmail"
+        Arguments = {
+          FromEmailAddress = var.email_address
+          Destination = {
+            ToAddresses = [var.email_address]
+          }
+          Content = {
+            Template = {
+              TemplateArn  = module.ses_fail_template.arn
+              TemplateName = module.ses_fail_template.name
+              TemplateData = "{% '{' & '\"fileName\":' & '\"' & $eventBucketKey & '\",' & '\"errorMessage\":' & '\"' & $states.input.cause & '\",' & '\"executionId\":' & '\"' & $states.context.Execution.Id & '\"' & '}' %}"
             }
           }
         }
