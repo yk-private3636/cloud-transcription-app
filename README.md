@@ -1,4 +1,4 @@
 # cloud-transcription-app
-クラウド文字起こしApp
+クラウド音声議事録
 
-![system-architecture-diagram](./system-architecture-diagram.png)
+![system-architecture-diagram](./system-architecture-diagram.drawio.png)
