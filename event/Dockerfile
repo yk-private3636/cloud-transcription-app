@@ -29,4 +29,10 @@ WORKDIR /src
 
 COPY --from=build /src/${BUILD_TARGET}/main ./
 
+RUN chmod +x ./main
+RUN adduser -D appuser
+RUN chown -R appuser:appuser /src
+
+USER appuser
+
 ENTRYPOINT [ "./main" ]
