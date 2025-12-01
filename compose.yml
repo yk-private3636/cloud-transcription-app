@@ -17,4 +17,4 @@ services:
     env_file:
     - ./terraform/.env
     volumes:
-    - ./terraform/infra:/opt/terrform/infra
+    - ./terraform/infra:/opt/terraform/infra
