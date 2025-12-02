@@ -28,4 +28,6 @@ locals {
   lambda_function_transcription_job_reader_policy_name    = "${local.name}-lambda-trans-job-reader-policy"
   ses_success_template_name                               = "${local.name}-ses-success-template"
   ses_fail_template_name                                  = "${local.name}-ses-fail-template"
+  github_actions_oidc_role_name                           = "${local.name}-github-oidc-role"
+  github_iam_role_policy_name                             = "${local.name}-github-iam-role-policy"
 }
