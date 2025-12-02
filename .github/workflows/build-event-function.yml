@@ -1,8 +1,8 @@
 name: Build Event Function
 on:
   push:
-    branches:
-      - main
+    # branches:
+    #   - main
     paths:
       - 'event/**'
       - '.github/workflows/build-event-function.yml'
