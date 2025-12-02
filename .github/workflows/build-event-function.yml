@@ -45,7 +45,7 @@ jobs:
       - name: Image Pipeline
         run: |
           for target in $(ls -1 ./event/src | grep -n ^ | grep ${{ matrix.group }}: | awk -F : '{print $2}'); do
-            git show --name-only ${{ github.sha }} | grep ^event/src/${target} > /dev/null
+            git diff --name-only HEAD^..HEAD | grep ^event/src/${target}
             if [ $? != 0 ]; then
               continue
             fi
