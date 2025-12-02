@@ -10,6 +10,12 @@ module "github_iam_role_policy" {
         Effect = "Allow"
         Action = [
           "ecr:GetAuthorizationToken",
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "ecr:DescribeRepositories",
           "ecr:CreateRepository",
           "ecr:PutImage",
