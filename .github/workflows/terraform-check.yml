@@ -1,0 +1,80 @@
+name: Terraform Check
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+      - '.github/workflows/terraform-check.yml'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.MY_GITHUB_ACCESS_TOKEN }}
+          fetch-depth: 1
+          sparse-checkout: 'terraform/'
+          
+      - name: Configure AWS Credentials for Japan region audience
+        uses: aws-actions/configure-aws-credentials@v5.1.0
+        with:
+          audience: sts.amazonaws.com
+          aws-region: ap-northeast-1
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_OIDC_ARN }}
+      
+      - name: Set Terraform version from Dockerfile
+        id: docker-terraform-version
+        working-directory: terraform
+        run: |
+          echo "TERRAFORM_VERSION=$(grep -m 1 BASE_IMAGE ./Dockerfile | awk -F : '{print $2}' | awk -F - '{print $1}' | sed 's/^$/latest/')" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{  steps.docker-terraform-version.outputs.TERRAFORM_VERSION }}
+      
+      - name: Terraform fmt
+        working-directory: terraform/infra/envs/prod
+        run: terraform fmt -check
+
+      - name: Setup terraform variables
+        id: setup_tfvars
+        working-directory: terraform/infra/envs/prod
+        run: |
+          cat << EOF > ./terraform.tfvars
+          env                                   = "prod"
+          project_name                          = "cloud-transcription-app"
+          aws_region                            = ["ap-northeast-1", "ap-northeast-3"]
+          aws_az                                = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
+          email_address                         = "${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}"
+          account_id                            = "${{ secrets.AWS_ACCOUNT_ID }}"
+          s3_daily_dir_image_tag                = "s3_daily_dir_image_tag-latest"
+          gen_nano_timestamp_image_tag          = "gen_nano_timestamp_image_tag-latest"
+          transcription_job_reader_image_tag    = "transcription_job_reader_image_tag-latest"
+          transcription_result_reader_image_tag = "transcription_result_reader_image_tag-latest"
+          transcription_lang                    = "ja-JP"
+          timezone                              = "Asia/Tokyo"
+          bedrock_model_id                      = "deepseek.v3-v1:0"
+          github_owner                          = "${{ github.repository.owner }}"
+          github_repo                           = "${${{ github.repository }}/${{ github.repository.owner }}\//}"
+          EOF
+
+      - name: Terraform Init
+        working-directory: terraform/infra/envs/prod
+        run: terraform init --input=false
+
+      - name: Terraform Validate
+        working-directory: terraform/infra/envs/prod
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        working-directory: terraform/infra/envs/prod
+        run: terraform plan -no-color -input=false
