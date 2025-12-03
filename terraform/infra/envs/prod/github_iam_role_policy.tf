@@ -42,7 +42,9 @@ module "github_iam_role_policy" {
           module.s3_bucket_transcribe_input.arn,
           "${module.s3_bucket_transcribe_input.arn}/*",
           module.s3_bucket_transcribe_output.arn,
-          "${module.s3_bucket_transcribe_output.arn}/*"
+          "${module.s3_bucket_transcribe_output.arn}/*",
+          var.s3_tfstate_arn,
+          "${var.s3_tfstate_arn}/*"
         ]
       },
       {
