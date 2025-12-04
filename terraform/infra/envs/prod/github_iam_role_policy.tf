@@ -108,6 +108,13 @@ module "github_iam_role_policy" {
           "ses:UpdateTemplate",
         ]
         Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:*",
+        ]
+        Resource = "*"
       }
     ]
   })
