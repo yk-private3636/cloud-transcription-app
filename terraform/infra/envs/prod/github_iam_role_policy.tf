@@ -32,7 +32,7 @@ module "github_iam_role_policy" {
       {
         Effect = "Allow"
         Action = [
-          "s3:GetObject",
+          "s3:Get*",
           "s3:ListBucket",
           "s3:CreateBucket",
           "s3:PutBucketNotification",
