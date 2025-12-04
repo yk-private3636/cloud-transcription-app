@@ -62,15 +62,23 @@ module "github_iam_role_policy" {
       {
         Effect = "Allow"
         Action = [
+          "states:DescribeStateMachine",
+          "states:ListStateMachineVersions",
+          "states:ListTagsForResource",
           "states:CreateStateMachine",
           "states:UpdateStateMachine",
         ]
-        Resource = [module.sfn_state_machine.arn]
+        Resource = [
+          module.sfn_state_machine.arn,
+          "${module.sfn_state_machine.arn}/*"
+        ]
       },
       {
         Effect = "Allow"
         Action = [
           "events:DescribeRule",
+          "events:ListTagsForResource",
+          "events:ListTargetsByRule",
           "events:PutRule",
           "events:PutTargets",
         ]
