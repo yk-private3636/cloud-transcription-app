@@ -18,6 +18,7 @@ module "github_iam_role_policy" {
         Action = [
           "ecr:DescribeRepositories",
           "ecr:CreateRepository",
+          "ecr:ListTagsForResource",
           "ecr:PutImage",
           "ecr:UploadLayerPart",
           "ecr:InitiateLayerUpload",
