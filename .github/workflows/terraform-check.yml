@@ -65,6 +65,7 @@ jobs:
           bedrock_model_id                      = "deepseek.v3-v1:0"
           github_owner                          = "${{ github.repository_owner }}"
           github_repo                           = "$(echo ${{ github.repository }} | awk -F / '{print $2}')"
+          s3_tfstate_arn                        = "${{ secrets.TFSTATE_S3_BUCKET_ARN }}"
           EOF
 
       - name: Terraform Init
