@@ -35,6 +35,7 @@ module "github_iam_role_policy" {
           "s3:GetObject",
           "s3:ListBucket",
           "s3:CreateBucket",
+          "s3:PutObject",
           "s3:PutBucketNotification",
           "s3:PutBucketPublicAccessBlock"
         ]
