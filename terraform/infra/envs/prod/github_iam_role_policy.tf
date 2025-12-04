@@ -101,6 +101,9 @@ module "github_iam_role_policy" {
       {
         Effect = "Allow"
         Action = [
+          "ses:GetTemplate",
+          "ses:GetIdentityVerificationAttributes",
+          "ses:GetCustomVerificationEmailTemplate",
           "ses:CreateTemplate",
           "ses:UpdateTemplate",
         ]
