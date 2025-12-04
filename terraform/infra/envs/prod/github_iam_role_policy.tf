@@ -87,6 +87,8 @@ module "github_iam_role_policy" {
       {
         Effect = "Allow"
         Action = [
+          "lambda:GetFunction",
+          "lambda:ListVersionsByFunction",
           "lambda:CreateFunction",
           "lambda:UpdateFunctionCode",
           "lambda:UpdateFunctionConfiguration",
