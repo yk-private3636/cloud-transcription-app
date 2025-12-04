@@ -35,7 +35,6 @@ module "github_iam_role_policy" {
           "s3:GetObject",
           "s3:ListBucket",
           "s3:CreateBucket",
-          "s3:PutObject",
           "s3:PutBucketNotification",
           "s3:PutBucketPublicAccessBlock"
         ]
@@ -44,8 +43,19 @@ module "github_iam_role_policy" {
           "${module.s3_bucket_transcribe_input.arn}/*",
           module.s3_bucket_transcribe_output.arn,
           "${module.s3_bucket_transcribe_output.arn}/*",
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:PutObject",
+          "s3:DeleteObject",
+        ]
+        Resource = [
           var.s3_tfstate_arn,
-          "${var.s3_tfstate_arn}/*"
+          "${var.s3_tfstate_arn}/*",
         ]
       },
       {
