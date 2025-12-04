@@ -70,6 +70,7 @@ module "github_iam_role_policy" {
       {
         Effect = "Allow"
         Action = [
+          "events:DescribeRule",
           "events:PutRule",
           "events:PutTargets",
         ]
@@ -81,6 +82,7 @@ module "github_iam_role_policy" {
           "scheduler:CreateSchedule",
           "scheduler:CreateScheduleGroup",
           "scheduler:UpdateSchedule",
+          "scheduler:GetSchedule"
         ]
         Resource = "*"
       },
