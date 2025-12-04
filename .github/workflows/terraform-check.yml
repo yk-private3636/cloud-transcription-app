@@ -63,8 +63,8 @@ jobs:
           transcription_lang                    = "ja-JP"
           timezone                              = "Asia/Tokyo"
           bedrock_model_id                      = "deepseek.v3-v1:0"
-          github_owner                          = "${{ github.repository.owner }}"
-          github_repo                           = "${${{ github.repository }}/${{ github.repository.owner }}\//}"
+          github_owner                          = "${{ github.repository_owner }}"
+          github_repo                           = "$(echo ${{ github.repository }} | awk -F / '{print $2}')"
           EOF
 
       - name: Terraform Init
