@@ -18,6 +18,7 @@ module "github_iam_role_policy" {
         Action = [
           "ecr:DescribeRepositories",
           "ecr:CreateRepository",
+          "ecr:ListTagsForResource",
           "ecr:PutImage",
           "ecr:UploadLayerPart",
           "ecr:InitiateLayerUpload",
@@ -32,7 +33,7 @@ module "github_iam_role_policy" {
       {
         Effect = "Allow"
         Action = [
-          "s3:GetObject",
+          "s3:Get*",
           "s3:ListBucket",
           "s3:CreateBucket",
           "s3:PutBucketNotification",
@@ -42,20 +43,42 @@ module "github_iam_role_policy" {
           module.s3_bucket_transcribe_input.arn,
           "${module.s3_bucket_transcribe_input.arn}/*",
           module.s3_bucket_transcribe_output.arn,
-          "${module.s3_bucket_transcribe_output.arn}/*"
+          "${module.s3_bucket_transcribe_output.arn}/*",
         ]
       },
       {
         Effect = "Allow"
         Action = [
+          "s3:GetObject",
+          "s3:ListBucket",
+          "s3:PutObject",
+          "s3:DeleteObject",
+        ]
+        Resource = [
+          var.s3_tfstate_arn,
+          "${var.s3_tfstate_arn}/*",
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "states:DescribeStateMachine",
+          "states:ListStateMachineVersions",
+          "states:ListTagsForResource",
           "states:CreateStateMachine",
           "states:UpdateStateMachine",
         ]
-        Resource = [module.sfn_state_machine.arn]
+        Resource = [
+          module.sfn_state_machine.arn,
+          "${module.sfn_state_machine.arn}/*"
+        ]
       },
       {
         Effect = "Allow"
         Action = [
+          "events:DescribeRule",
+          "events:ListTagsForResource",
+          "events:ListTargetsByRule",
           "events:PutRule",
           "events:PutTargets",
         ]
@@ -67,12 +90,15 @@ module "github_iam_role_policy" {
           "scheduler:CreateSchedule",
           "scheduler:CreateScheduleGroup",
           "scheduler:UpdateSchedule",
+          "scheduler:GetSchedule"
         ]
         Resource = "*"
       },
       {
         Effect = "Allow"
         Action = [
+          "lambda:GetFunction",
+          "lambda:ListVersionsByFunction",
           "lambda:CreateFunction",
           "lambda:UpdateFunctionCode",
           "lambda:UpdateFunctionConfiguration",
@@ -88,8 +114,18 @@ module "github_iam_role_policy" {
       {
         Effect = "Allow"
         Action = [
+          "ses:GetTemplate",
+          "ses:GetIdentityVerificationAttributes",
+          "ses:GetCustomVerificationEmailTemplate",
           "ses:CreateTemplate",
           "ses:UpdateTemplate",
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "iam:*",
         ]
         Resource = "*"
       }

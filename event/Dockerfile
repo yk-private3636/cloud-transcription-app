@@ -1,13 +1,13 @@
-ARG IMAGE=golang:1.25.4-alpine
+ARG BASE_IMAGE=golang:1.25.4-alpine
 
-FROM ${IMAGE} AS dev
+FROM ${BASE_IMAGE} AS dev
 
 WORKDIR /src
 
 ENTRYPOINT [ "tail", "-f", "/dev/null" ]
 
 
-FROM ${IMAGE} AS build
+FROM ${BASE_IMAGE} AS build
 
 ARG BUILD_TARGET
 
@@ -21,7 +21,7 @@ RUN go build -a -o ./main
 
 
 # FROM busybox:1.37.0 AS prod
-FROM ${IMAGE} AS prod
+FROM ${BASE_IMAGE} AS prod
 
 ARG BUILD_TARGET
 

@@ -77,3 +77,7 @@ variable "github_owner" {
 variable "github_repo" {
   type = string
 }
+
+variable "s3_tfstate_arn" {
+  type = string
+}
