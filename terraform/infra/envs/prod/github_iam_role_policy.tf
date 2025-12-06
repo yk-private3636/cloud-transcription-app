@@ -97,12 +97,15 @@ module "github_iam_role_policy" {
       {
         Effect = "Allow"
         Action = [
+          "lambda:GetPolicy",
+          "lambda:GetLayerVersionPolicy",
           "lambda:GetFunction",
           "lambda:ListVersionsByFunction",
+          "lambda:AddPermission",
           "lambda:CreateFunction",
           "lambda:UpdateFunctionCode",
           "lambda:UpdateFunctionConfiguration",
-          "lambda:AddPermission",
+          "lambda:RemovePermission",
         ]
         Resource = [
           module.s3_daily_dir_function.arn,
