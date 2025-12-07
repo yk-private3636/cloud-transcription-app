@@ -54,7 +54,8 @@ jobs:
           project_name                          = "cloud-transcription-app"
           aws_region                            = ["ap-northeast-1", "ap-northeast-3"]
           aws_az                                = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
-          email_address                         = "${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}"
+          email_from_address                    = "${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}"
+          email_to_address                      = ["${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}"]
           account_id                            = "${{ secrets.AWS_ACCOUNT_ID }}"
           s3_daily_dir_image_tag                = "s3_daily_dir-latest"
           gen_nano_timestamp_image_tag          = "gen_nano_timestamp-latest"
