@@ -4,6 +4,7 @@ aws_region = ["ap-northeast-1", "ap-northeast-3"]
 aws_az = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
 timezone      = "Asia/Tokyo"
 email_address = ""
+email_to_address = [""]
 account_id    = ""
 s3_daily_dir_image_tag = "latest"
 gen_nano_timestamp_image_tag = "latest"

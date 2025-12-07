@@ -172,9 +172,9 @@ module "sfn_state_machine" {
         Type     = "Task"
         Resource = "arn:aws:states:::aws-sdk:sesv2:sendEmail"
         Arguments = {
-          FromEmailAddress = var.email_address
+          FromEmailAddress = var.email_from_address
           Destination = {
-            ToAddresses = [var.email_address]
+            ToAddresses = var.email_to_address
           }
           Content = {
             Template = {
@@ -215,9 +215,9 @@ module "sfn_state_machine" {
         Type     = "Task"
         Resource = "arn:aws:states:::aws-sdk:sesv2:sendEmail"
         Arguments = {
-          FromEmailAddress = var.email_address
+          FromEmailAddress = var.email_from_address
           Destination = {
-            ToAddresses = [var.email_address]
+            ToAddresses = var.email_to_address
           }
           Content = {
             Template = {

@@ -31,8 +31,13 @@ variable "timezone" {
   type = string
 }
 
-variable "email_address" {
+variable "email_from_address" {
   type      = string
+  sensitive = true
+}
+
+variable "email_to_address" {
+  type      = list(string)
   sensitive = true
 }
 
