@@ -35,3 +35,14 @@ jobs:
               audience: sts.amazonaws.com
               aws-region: ap-northeast-1
               role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_OIDC_ARN }}
+              
+          - name: Set Lambda latest image
+            id: set-lambda-images
+            run: |
+              for name in $(ls -1 ./event/src); do \
+                current_image=$(aws lambda get-function --function-name prod-$(echo ${name//_/-}) | jq '.Code.ImageUri' | sed -e 's/^.*\///' | sed -e 's/\"$//';) \
+                aws ecr describe-images --repository-name prod-cloud-transcription-app --image-ids imageTag=${name}:${{ github.sha }} || echo "${name}=${current_image}" >> "$GITHUB_OUTPUT"; continue; \
+                echo "${name}=${name}:${{ github.sha }}" >> "$GITHUB_OUTPUT"; \
+              done
+
+
