@@ -1,0 +1,37 @@
+name: Deploy
+on:
+  workflow_run:
+    workflows: ["Build Event Function"]
+    types:
+      - completed
+    branches:
+      - main
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'event/**'
+      - '.github/workflows/build-event-function.yml'
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v6
+            with:
+              token: ${{ secrets.MY_GITHUB_ACCESS_TOKEN }}
+              fetch-depth: 1
+              # sparse-checkout: ''
+        
+          - name: Configure AWS Credentials for Japan region audience
+            uses: aws-actions/configure-aws-credentials@v5.1.0
+            with:
+              audience: sts.amazonaws.com
+              aws-region: ap-northeast-1
+              role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_OIDC_ARN }}
