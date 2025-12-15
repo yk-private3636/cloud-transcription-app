@@ -20,7 +20,6 @@ RUN go mod tidy
 RUN go build -a -o ./main
 
 
-# FROM busybox:1.37.0 AS prod
 FROM ${BASE_IMAGE} AS prod
 
 ARG BUILD_TARGET
