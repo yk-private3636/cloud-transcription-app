@@ -17,6 +17,7 @@ module "github_iam_role_policy" {
         Effect = "Allow"
         Action = [
           "ecr:DescribeRepositories",
+          "ecr:DescribeImages",
           "ecr:CreateRepository",
           "ecr:ListTagsForResource",
           "ecr:PutImage",

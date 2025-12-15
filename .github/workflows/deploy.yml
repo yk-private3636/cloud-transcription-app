@@ -81,4 +81,4 @@ jobs:
             run: terraform init --input=false
           
           - name: Terraform apply
-            run: terraform -chdir=./terraform/infra/envs/prod apply -auto-approve -input=false $(for name in $(ls -1 ./event/src); do echo -var \'${name}_image_tag=$(echo '${{ toJson(steps.set-lambda-latest-image.outputs) }}' | jq ".${name}") \'; done)
+            run: terraform -chdir=./terraform/infra/envs/prod apply -auto-approve -input=false $(for name in $(ls -1 ./event/src); do echo -var \'${name}_image_tag=$(echo '${{ toJson(steps.set-lambda-latest-image.outputs) }}' | jq ".${name}" | sed 's/^"//;s/"$//')\' | sed -z s/\\n$/' '/; done)
