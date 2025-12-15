@@ -19,7 +19,7 @@ type Reader interface {
 
 type ReaderResult struct {
 	JobName   string `json:"jobName"`
-	AccountId string `json:"accountId"`
+	AccountID string `json:"accountId"`
 	Status    string `json:"status"`
 	Results   struct {
 		Transcripts []struct {
@@ -45,9 +45,7 @@ func (r *reader) TranscriptionResult(ctx context.Context, bucket, key string) (*
 		return nil, err
 	}
 
-	defer func() {
-		obj.Body.Close()
-	}()
+	defer obj.Body.Close()
 
 	data, err := io.ReadAll(obj.Body)
 

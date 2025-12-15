@@ -25,7 +25,7 @@ type Event struct {
 
 type Output struct {
 	JobName    string `json:"jobName"`
-	AccountId  string `json:"accountId"`
+	AccountID  string `json:"accountId"`
 	Status     string `json:"status"`
 	Transcript string `json:"transcript"`
 }
@@ -72,7 +72,7 @@ func EventHandler(ctx context.Context, event json.RawMessage) (Output, error) {
 
 	return Output{
 		JobName:    result.JobName,
-		AccountId:  result.AccountId,
+		AccountID:  result.AccountID,
 		Status:     result.Status,
 		Transcript: result.Results.Transcripts[0].Transcript,
 	}, nil

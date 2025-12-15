@@ -31,9 +31,5 @@ func (s *storage) Put(ctx context.Context, objectKey string, body io.Reader) err
 		Body:   body,
 	})
 
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }
