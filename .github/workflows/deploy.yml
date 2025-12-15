@@ -40,9 +40,9 @@ jobs:
             id: set-lambda-latest-image
             run: |
               for name in $(ls -1 ./event/src); do
-                current_image=$(aws lambda get-function --function-name prod-$(echo ${name//_/-}) | jq '.Code.ImageUri' | sed -e 's/^.*\///' | sed -e 's/\"$//';)
+                current_image=$(aws lambda get-function --function-name prod-$(echo ${name//_/-}) | jq '.Code.ImageUri' | sed -e 's/^.*\///' | sed -e 's/\"$//' | awk -F \: '{print $2}';)
                 aws ecr describe-images --repository-name prod-cloud-transcription-app --image-ids imageTag=${{ github.sha }} || echo "${name}=${current_image}" >> "$GITHUB_OUTPUT"; continue;
-                echo "${name}=${name}:${{ github.sha }}" >> "$GITHUB_OUTPUT";
+                echo "${name}=$(echo ${name//_/-})-${{ github.sha }}" >> "$GITHUB_OUTPUT";
               done
 
           - name: Setup terraform variables
@@ -81,4 +81,4 @@ jobs:
             run: terraform init --input=false
           
           - name: Terraform apply
-            run: terraform -chdir=./terraform/infra/envs/prod apply -auto-approve -input=false $(for name in $(ls -1 ./event/src); do echo -var \'${name}_image_tag=$(echo '${{ toJson(steps.set-lambda-latest-image.outputs) }}' | jq ".${name}" | sed 's/^"//;s/"$//')\' | sed -z s/\\n$/' '/; done)
+            run: terraform -chdir=./terraform/infra/envs/prod apply -auto-approve -input=false $(for name in $(ls -1 ./event/src); do echo -var ${name}_image_tag=$(echo '${{ toJson(steps.set-lambda-latest-image.outputs) }}' | jq ".${name}" | sed 's/^"//;s/"$//') | sed -z s/\\n$/' '/; done)
