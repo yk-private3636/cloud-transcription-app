@@ -45,7 +45,7 @@ jobs:
       - name: Image Pipeline
         run: |
           for target in $(ls -1 ./event/src | grep -n ^ | grep ${{ matrix.group }}: | awk -F : '{print $2}'); do
-            git diff --name-only HEAD^..HEAD | grep ^event/src/${target} || continue
+            git diff --name-only HEAD^..HEAD | grep -e ^event/Dockerfile -e ^event/src/${target} || continue
             docker build -t ${{ secrets.IMAGE_REGISTRY_URI }}:${target}-${{ github.sha }} --target prod --build-arg BUILD_TARGET=${target} --provenance=false ./event
             trivy image --severity HIGH,CRITICAL --exit-code 1 ${{ secrets.IMAGE_REGISTRY_URI }}:${target}-${{ github.sha }}
             docker push ${{ secrets.IMAGE_REGISTRY_URI }}:${target}-${{ github.sha }}
