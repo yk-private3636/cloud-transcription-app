@@ -36,7 +36,7 @@ jobs:
               aws-region: ap-northeast-1
               role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_OIDC_ARN }}
               
-          - name: Set Lambda latest image
+          - name: Set Lambda Latest image
             id: set-lambda-latest-image
             run: |
               for name in $(ls -1 ./event/src); do
@@ -81,4 +81,4 @@ jobs:
             run: terraform init --input=false
           
           - name: Terraform apply
-            run: terraform --chdir=./terraform/infra/envs/prod apply -auto-approve -input=false $(for name in $(ls -1 ./event/src); do echo -var ${name}_image_tag=$(echo '${{ toJson(steps.set-lambda-latest-image.outputs) }}' | jq ".${name}") ; done)
+            run: terraform -chdir=./terraform/infra/envs/prod apply -auto-approve -input=false $(for name in $(ls -1 ./event/src); do echo -var \'${name}_image_tag=$(echo '${{ toJson(steps.set-lambda-latest-image.outputs) }}' | jq ".${name}") \'; done)
