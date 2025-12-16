@@ -20,7 +20,7 @@ RUN go mod tidy
 RUN go build -a -o ./main
 
 
-FROM ${BASE_IMAGE} AS prod
+FROM alpine:3.23.0 AS prod
 
 ARG BUILD_TARGET
 
