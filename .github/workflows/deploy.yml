@@ -35,10 +35,11 @@ jobs:
             run: |
               for name in $(ls -1 ./event/src); do
                 current_image=$(aws lambda get-function --function-name prod-$(echo ${name//_/-}) | jq '.Code.ImageUri' | sed -e 's/^.*\///' | sed -e 's/\"$//' | awk -F \: '{print $2}';)
-                aws ecr describe-images --repository-name prod-cloud-transcription-app --image-ids imageTag=${name}-${{ github.sha }} > /dev/null 2>&1;
-                if [ $? -eq 0 ]; then
+                status=0
+                aws ecr describe-images --repository-name prod-cloud-transcription-app --image-ids imageTag=${name}-${{ github.sha }} > /dev/null 2>&1 || status=$?;
+                if [ $status -eq 0 ]; then
                   echo "${name}=${name}-${{ github.sha }}" >> "$GITHUB_OUTPUT"
-                elif [ $? -eq 254 ]; then
+                elif [ $status -eq 254 ]; then
                   echo "${name}=${current_image}" >> "$GITHUB_OUTPUT"
                 else
                   exit 1
