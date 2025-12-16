@@ -1,11 +1,11 @@
-name: Terraform Check
+name: Check Terraform
 on:
   pull_request:
     branches:
       - main
     paths:
       - 'terraform/**'
-      - '.github/workflows/terraform-check.yml'
+      - '.github/workflows/check-terraform.yml'
 
 permissions:
   id-token: write
