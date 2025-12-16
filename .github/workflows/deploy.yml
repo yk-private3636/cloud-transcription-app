@@ -6,12 +6,6 @@ on:
       - completed
     branches:
       - main
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - 'event/**'
-      - '.github/workflows/build-event-function.yml'
 
 permissions:
   id-token: write
