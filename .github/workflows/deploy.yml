@@ -41,7 +41,7 @@ jobs:
             run: |
               for name in $(ls -1 ./event/src); do
                 current_image=$(aws lambda get-function --function-name prod-$(echo ${name//_/-}) | jq '.Code.ImageUri' | sed -e 's/^.*\///' | sed -e 's/\"$//' | awk -F \: '{print $2}';)
-                aws ecr describe-images --repository-name prod-cloud-transcription-app --image-ids imageTag=${name}-${{ github.sha }} || echo "${name}=${current_image}" >> "$GITHUB_OUTPUT"; continue;
+                aws ecr describe-images --repository-name prod-cloud-transcription-app --image-ids imageTag=${name}-${{ github.sha }} || (echo "${name}=${current_image}" >> "$GITHUB_OUTPUT" && continue);
                 echo "${name}=${name}-${{ github.sha }}" >> "$GITHUB_OUTPUT";
               done
 
