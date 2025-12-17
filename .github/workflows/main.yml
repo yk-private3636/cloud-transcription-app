@@ -1,4 +1,4 @@
-name: Build Event Function
+name: Main Workflow
 on:
   push:
     branches:
