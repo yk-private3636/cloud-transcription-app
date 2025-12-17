@@ -1,4 +1,4 @@
-name: Build Event Function
+name: Main Workflow
 on:
   push:
     branches:
@@ -50,3 +50,14 @@ jobs:
             trivy image --severity HIGH,CRITICAL --exit-code 1 ${{ secrets.IMAGE_REGISTRY_URI }}:${target}-${{ github.sha }}
             docker push ${{ secrets.IMAGE_REGISTRY_URI }}:${target}-${{ github.sha }}
           done
+  
+  call-deploy:   
+    uses: ./.github/workflows/deploy.yml
+    needs: build
+    secrets:
+      MY_GITHUB_ACCESS_TOKEN: ${{ secrets.MY_GITHUB_ACCESS_TOKEN }}
+      AWS_ROLE_TO_ASSUME_OIDC_ARN: ${{ secrets.AWS_ROLE_TO_ASSUME_OIDC_ARN }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      TFSTATE_S3_BUCKET_ARN: ${{ secrets.TFSTATE_S3_BUCKET_ARN }}
+      NOTIFICATION_EMAIL_ADDRESS: ${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}
+      MODEL_ID: ${{ secrets.MODEL_ID }}

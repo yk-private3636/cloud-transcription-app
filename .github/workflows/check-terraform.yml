@@ -1,4 +1,4 @@
-name: Check Terraform
+name: Check Terraform Workflow
 on:
   pull_request:
     branches:
