@@ -1,11 +1,19 @@
 name: Deploy
 on:
-  workflow_run:
-    workflows: ["Build Event Function"]
-    types:
-      - completed
-    branches:
-      - main
+  workflow_call:
+    secrets:
+      MY_GITHUB_ACCESS_TOKEN:
+        required: true
+      AWS_ROLE_TO_ASSUME_OIDC_ARN:
+        required: true
+      AWS_ACCOUNT_ID:
+        required: true
+      TFSTATE_S3_BUCKET_ARN:
+        required: true
+      NOTIFICATION_EMAIL_ADDRESS:
+        required: true
+      MODEL_ID:
+        required: true
 
 permissions:
   id-token: write
