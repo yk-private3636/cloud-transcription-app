@@ -26,6 +26,13 @@ ARG BUILD_TARGET
 
 WORKDIR /src
 
+RUN apk update && \
+apk add tzdata
+
+RUN ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
+
+RUN ls -1 /usr/share/zoneinfo/ | grep -vx Asia | xargs -I {} rm -r /usr/share/zoneinfo/{}
+
 COPY --from=build /src/${BUILD_TARGET}/main ./
 
 RUN chmod +x ./main
