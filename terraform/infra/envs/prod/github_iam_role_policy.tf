@@ -18,13 +18,16 @@ module "github_iam_role_policy" {
         Action = [
           "ecr:DescribeRepositories",
           "ecr:DescribeImages",
+          "ecr:BatchGetImage",
           "ecr:CreateRepository",
+          "ecr:ListImages",
           "ecr:ListTagsForResource",
           "ecr:PutImage",
           "ecr:UploadLayerPart",
           "ecr:InitiateLayerUpload",
           "ecr:CompleteLayerUpload",
           "ecr:BatchCheckLayerAvailability",
+          "ecr:BatchDeleteImage",
         ]
         Resource = [
           module.ecr_repository.arn,
