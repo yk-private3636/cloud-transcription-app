@@ -1,0 +1,43 @@
+name: Cleanup ECR Images Workflow
+on: 
+  schedule:
+    - cron: '0 15 * * 5'
+
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  cleanup-ecr-images:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Configure AWS Credentials for Japan region audience
+        uses: aws-actions/configure-aws-credentials@v5.1.0
+        with:
+          audience: sts.amazonaws.com
+          aws-region: ap-northeast-1
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_OIDC_ARN }}
+
+      - name: Cleanup ECR Images
+        run: |
+            declare -A eventImageCounts
+            for imageTag in $(aws ecr describe-images --repository-name  prod-cloud-transcription-app $(echo --image-ids imageTag=$(aws ecr list-images --repository-name prod-cloud-transcription-app | jq -r '.imageIds[].imageTag' | sed -z s/\\n/' imageTag='/g) | sed -e s/imageTag=$//) | jq -r '.imageDetails' | jq 'sort_by(.lastRecordedPullTime) | reverse' | jq -r '.[].imageTags[]'); do
+                eventName=$(echo ${imageTag} | awk -F - '{print $1}')
+                if [ -z "${eventImageCounts[${eventName}]}" ]; then
+                    eventImageCounts[${eventName}]=1
+                    continue
+                fi
+                
+                eventImageCounts[${eventName}]=$((eventImageCounts[${eventName}]+1))
+
+                if [ ${eventImageCounts[${eventName}]} -le 3 ]; then
+                    continue
+                fi
+
+                aws ecr batch-delete-image --repository-name prod-cloud-transcription-app --image-ids imageTag=${imageTag}
+            done
