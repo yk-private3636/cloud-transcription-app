@@ -28,6 +28,8 @@ module "github_iam_role_policy" {
           "ecr:CompleteLayerUpload",
           "ecr:BatchCheckLayerAvailability",
           "ecr:BatchDeleteImage",
+          "ecr:getLifecyclePolicy",
+          "ecr:PutLifecyclePolicy",
         ]
         Resource = [
           module.ecr_repository.arn,
