@@ -43,7 +43,8 @@ module "github_iam_role_policy" {
           "s3:ListBucket",
           "s3:CreateBucket",
           "s3:PutBucketNotification",
-          "s3:PutBucketPublicAccessBlock"
+          "s3:PutBucketPublicAccessBlock",
+          "s3:PutBucketLifecycleConfiguration",
         ]
         Resource = [
           module.s3_bucket_transcribe_input.arn,
