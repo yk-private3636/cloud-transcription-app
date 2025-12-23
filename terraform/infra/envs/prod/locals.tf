@@ -30,4 +30,6 @@ locals {
   ses_fail_template_name                                  = "${local.name}-ses-fail-template"
   github_actions_oidc_role_name                           = "${local.name}-github-oidc-role"
   github_iam_role_policy_name                             = "${local.name}-github-iam-role-policy"
+  s3_bucket_transcribe_input_lifecycle_rule_id            = "${local.name}-s3-transcribe-input-lifecycle-rule"
+  s3_bucket_transcribe_output_lifecycle_rule_id           = "${local.name}-s3-transcribe-output-lifecycle-rule"
 }
