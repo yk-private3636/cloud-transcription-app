@@ -1,0 +1,32 @@
+version: 2
+updates:
+
+  - package-ecosystem: "gomod"
+    directory: "/event/src/gen_nano_timestamp"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "gomod"
+    directory: "/event/src/s3_daily_dir"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "gomod"
+    directory: "/event/src/transcription_job_reader"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "gomod"
+    directory: "/event/src/transcription_result_reader"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "docker"
+    directory: "/event"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "docker"
+    directory: "/terraform"
+    schedule:
+      interval: "weekly"
