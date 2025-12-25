@@ -2,6 +2,7 @@ services:
 
   event:
     container_name: event
+    image: cloud-transcription-app:event-dev
     build:
       context: ./event
       target: dev
@@ -12,6 +13,7 @@ services:
 
   terraform:
     container_name: terraform
+    image: cloud-transcription-app:terraform
     build:
       context: ./terraform
     env_file:
