@@ -46,6 +46,16 @@ variable "account_id" {
   sensitive = true
 }
 
+variable "assume_role_arn" {
+  type      = string
+  sensitive = true
+}
+
+variable "terraform_iam_user_name" {
+  type      = string
+  sensitive = true
+}
+
 variable "s3_daily_dir_image_tag" {
   type    = string
   default = "latest"

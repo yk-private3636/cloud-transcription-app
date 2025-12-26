@@ -4,7 +4,9 @@ on:
     secrets:
       MY_GITHUB_ACCESS_TOKEN:
         required: true
-      AWS_ROLE_TO_ASSUME_OIDC_ARN:
+      AWS_ROLE_TO_ASSUME_ARN:
+        required: true
+      TERRAFORM_IAM_USER_NAME:
         required: true
       AWS_ACCOUNT_ID:
         required: true
@@ -36,7 +38,7 @@ jobs:
             with:
               audience: sts.amazonaws.com
               aws-region: ap-northeast-1
-              role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_OIDC_ARN }}
+              role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
               
           - name: Set Lambda Latest image
             id: set-lambda-latest-image
@@ -66,6 +68,8 @@ jobs:
               email_from_address                    = "${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}"
               email_to_address                      = ["${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}"]
               account_id                            = "${{ secrets.AWS_ACCOUNT_ID }}"
+              assume_role_arn                       = "${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}"
+              terraform_iam_user_name               = "${{ secrets.TERRAFORM_IAM_USER_NAME }}"
               transcription_lang                    = "ja-JP"
               timezone                              = "Asia/Tokyo"
               bedrock_model_id                      = "${{ secrets.MODEL_ID }}"

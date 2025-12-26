@@ -1,8 +1,8 @@
-module "github_iam_role_policy" {
+module "terraform_role_policy" {
   source = "../../modules/iam_role_policy"
 
-  name    = local.github_iam_role_policy_name
-  role_id = module.github_actions_oidc_role.id
+  name    = local.terraform_role_policy_name
+  role_id = module.terraform_role.id
   policy_document = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -44,7 +44,11 @@ module "github_iam_role_policy" {
           "s3:CreateBucket",
           "s3:PutBucketNotification",
           "s3:PutBucketPublicAccessBlock",
-          "s3:PutBucketLifecycleConfiguration",
+          "s3:PutLifecycleConfiguration",
+          "s3:PutBucketTagging",
+          "s3:PutObject",
+          "s3:DeleteBucket",
+          "s3:DeleteObject",
         ]
         Resource = [
           module.s3_bucket_transcribe_input.arn,
@@ -72,6 +76,7 @@ module "github_iam_role_policy" {
           "states:DescribeStateMachine",
           "states:ListStateMachineVersions",
           "states:ListTagsForResource",
+          "states:ValidateStateMachineDefinition",
           "states:CreateStateMachine",
           "states:UpdateStateMachine",
         ]
@@ -110,6 +115,7 @@ module "github_iam_role_policy" {
           "lambda:ListVersionsByFunction",
           "lambda:AddPermission",
           "lambda:CreateFunction",
+          "lambda:TagResource",
           "lambda:UpdateFunctionCode",
           "lambda:UpdateFunctionConfiguration",
           "lambda:RemovePermission",
@@ -127,6 +133,7 @@ module "github_iam_role_policy" {
           "ses:GetTemplate",
           "ses:GetIdentityVerificationAttributes",
           "ses:GetCustomVerificationEmailTemplate",
+          "ses:VerifyEmailIdentity",
           "ses:CreateTemplate",
           "ses:UpdateTemplate",
         ]
@@ -137,7 +144,10 @@ module "github_iam_role_policy" {
         Action = [
           "iam:*",
         ]
-        Resource = "*"
+        Resource = [
+          "arn:aws:iam::${var.account_id}:role/prod-cloud-transcription-app-*",
+          module.github_actions_openid_connect_provider.arn,
+        ]
       }
     ]
   })
