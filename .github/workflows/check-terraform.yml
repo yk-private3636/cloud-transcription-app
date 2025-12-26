@@ -28,7 +28,7 @@ jobs:
         with:
           audience: sts.amazonaws.com
           aws-region: ap-northeast-1
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_OIDC_ARN }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
       
       - name: Set Terraform version from Dockerfile
         id: docker-terraform-version
@@ -57,6 +57,8 @@ jobs:
           email_from_address                    = "${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}"
           email_to_address                      = ["${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}"]
           account_id                            = "${{ secrets.AWS_ACCOUNT_ID }}"
+          assume_role_arn                       = "${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}"
+          terraform_iam_user_name               = "${{ secrets.TERRAFORM_IAM_USER_NAME }}"
           s3_daily_dir_image_tag                = "s3_daily_dir-latest"
           gen_nano_timestamp_image_tag          = "gen_nano_timestamp-latest"
           transcription_job_reader_image_tag    = "transcription_job_reader-latest"

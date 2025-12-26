@@ -30,6 +30,6 @@ locals {
   transcription_output_file                               = "transcription.json"
   ses_success_template_name                               = "${local.name}-ses-success-template"
   ses_fail_template_name                                  = "${local.name}-ses-fail-template"
-  github_actions_oidc_role_name                           = "${local.name}-github-oidc-role"
-  github_iam_role_policy_name                             = "${local.name}-github-iam-role-policy"
+  terraform_role_name                                     = "${local.name}-terraform-role"
+  terraform_role_policy_name                              = "${local.name}-terraform-role-policy"
 }

@@ -1,11 +1,23 @@
-module "github_actions_oidc_role" {
+module "terraform_role" {
   source = "../../modules/iam_role"
 
-  name               = local.github_actions_oidc_role_name
-  assume_role_policy = data.aws_iam_policy_document.github_actions_oidc_role_policy.json
+  name               = local.terraform_role_name
+  assume_role_policy = data.aws_iam_policy_document.terraform_assume_role_policy.json
 }
 
-data "aws_iam_policy_document" "github_actions_oidc_role_policy" {
+data "aws_iam_policy_document" "terraform_assume_role_policy" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type = "AWS"
+      identifiers = [
+        "arn:aws:iam::${var.account_id}:user/${var.terraform_iam_user_name}",
+        "arn:aws:sts::${var.account_id}:assumed-role/${local.terraform_role_name}/GitHubActions"
+      ]
+    }
+  }
+
   statement {
     effect  = "Allow"
     actions = ["sts:AssumeRoleWithWebIdentity"]
