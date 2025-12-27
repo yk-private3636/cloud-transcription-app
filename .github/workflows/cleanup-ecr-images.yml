@@ -1,7 +1,8 @@
 name: Cleanup ECR Images Workflow
 on: 
   schedule:
-    - cron: '0 15 * * 5' # UTC
+    - cron: '0 15 * * *' # UTC
+    # - cron: '0 15 * * 5' # UTC
 
 permissions:
   id-token: write
