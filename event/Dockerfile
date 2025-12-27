@@ -1,6 +1,6 @@
 ARG BASE_IMAGE=golang:1.25.5-alpine
 
-FROM ${BASE_IMAGE} AS dev
+FROM ${BASE_IMAGE} AS local
 
 WORKDIR /src
 
