@@ -6,4 +6,4 @@ trap '[ $? -eq 0 ] || echo "An error occurred. Exiting."' EXIT
 
 echo "Running pre-commit checks..."
 
-docker compose exec -T terraform sh -c 'for dir in $(ls -d ${PWD}/*/); do terraform -chdir=$dir fmt -check && terraform -chdir=$dir validate && terraform -chdir=$dir plan; done'
+docker compose exec -T infra sh -c 'for dir in $(ls -d ${PWD}/*/); do terraform -chdir=$dir fmt -check && terraform -chdir=$dir validate && terraform -chdir=$dir plan; done'

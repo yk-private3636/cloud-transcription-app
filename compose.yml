@@ -5,18 +5,18 @@ services:
     image: cloud-transcription-app-event:local-latest
     build:
       context: ./event
-      target: dev
+      target: local
     env_file:
       - ./event/.env
     volumes:
     - ./event/src:/src
 
-  terraform:
-    container_name: terraform
-    image: cloud-transcription-app-terraform:local-latest
+  infra:
+    container_name: infra
+    image: cloud-transcription-app-infra:local-latest
     build:
-      context: ./terraform
+      context: ./infra
     env_file:
-    - ./terraform/.env
+    - ./infra/.env
     volumes:
-    - ./terraform/infra:/home/terraform/infra
+    - ./infra/src:/home/terraform/infra

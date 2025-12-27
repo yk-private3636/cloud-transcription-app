@@ -9,8 +9,8 @@ githooksSetup() {
 
 terraformSetup() {
     cp -n ${1}/.env.example ${1}/.env 
-    # cp -n ${1}/terraform.tfvars.example ${1}/infra/envs/*/terraform.tfvars
-    for dir in $(ls -d ${1}/infra/envs/*/); do
+    # cp -n ${1}/terraform.tfvars.example ${1}/src/envs/*/terraform.tfvars
+    for dir in $(ls -d ${1}/src/envs/*/); do
         cp -n ${1}/terraform.tfvars.example ${dir}/terraform.tfvars
     done
 }
@@ -69,7 +69,7 @@ eventSetup() {
 readonly SCRIPT_DIR=$(dirname "$(realpath "$0")")
 readonly GIT_DIR=${SCRIPT_DIR}/.git
 readonly GIT_HOOKS_SCRIPT_DIR=${SCRIPT_DIR}/git-hooks
-readonly TERRAFORM_DIR=${SCRIPT_DIR}/terraform
+readonly TERRAFORM_DIR=${SCRIPT_DIR}/infra
 readonly EVENT_DIR=${SCRIPT_DIR}/event
 
 githooksSetup ${GIT_HOOKS_SCRIPT_DIR} ${GIT_DIR}
