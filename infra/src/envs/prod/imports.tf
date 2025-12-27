@@ -1,6 +1,6 @@
 import {
-  to = module.terraform_role.aws_iam_role.main
+  to = module.executor_role.aws_iam_role.main
   identity = {
-    "name" = local.terraform_role_name
+    "name" = local.executor_role_name
   }
 }

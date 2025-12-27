@@ -1,8 +1,8 @@
-module "terraform_role_policy" {
+module "executor_role_policy" {
   source = "../../modules/iam_role_policy"
 
-  name    = local.terraform_role_policy_name
-  role_id = module.terraform_role.id
+  name    = local.executor_role_policy_name
+  role_id = module.executor_role.id
   policy_document = jsonencode({
     Version = "2012-10-17"
     Statement = [

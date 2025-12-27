@@ -13,7 +13,7 @@ jobs:
     uses: ./.github/workflows/build-event-function.yml
     secrets:
       MY_GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      AWS_ROLE_TO_ASSUME_ARN: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
+      EXECUTOR_ROLE_ARN: ${{ secrets.EXECUTOR_ROLE_ARN }}
       IMAGE_REGISTRY_URI: ${{ secrets.IMAGE_REGISTRY_URI }}
     
   deploy:   
@@ -21,8 +21,8 @@ jobs:
     needs: build-event-function
     secrets:
       MY_GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      AWS_ROLE_TO_ASSUME_ARN: ${{ secrets.AWS_ROLE_TO_ASSUME_ARN }}
-      TERRAFORM_IAM_USER_NAME: ${{ secrets.TERRAFORM_IAM_USER_NAME }}
+      EXECUTOR_ROLE_ARN: ${{ secrets.EXECUTOR_ROLE_ARN }}
+      EXECUTOR_ROLE_PRINCIPAL_NAME: ${{ secrets.EXECUTOR_ROLE_PRINCIPAL_NAME }}
       AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
       TFSTATE_S3_BUCKET_ARN: ${{ secrets.TFSTATE_S3_BUCKET_ARN }}
       NOTIFICATION_EMAIL_ADDRESS: ${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}

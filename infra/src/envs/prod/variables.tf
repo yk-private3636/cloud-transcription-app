@@ -46,12 +46,12 @@ variable "account_id" {
   sensitive = true
 }
 
-variable "assume_role_arn" {
+variable "executor_role_arn" {
   type      = string
   sensitive = true
 }
 
-variable "terraform_iam_user_name" {
+variable "executor_role_principal_name" {
   type      = string
   sensitive = true
 }
