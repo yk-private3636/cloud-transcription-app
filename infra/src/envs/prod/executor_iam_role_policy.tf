@@ -102,7 +102,11 @@ module "executor_role_policy" {
           "scheduler:CreateSchedule",
           "scheduler:CreateScheduleGroup",
           "scheduler:UpdateSchedule",
-          "scheduler:GetSchedule"
+          "scheduler:GetSchedule",
+          "scheduler:GetScheduleGroup",
+          "scheduler:DeleteSchedule",
+          "scheduler:DeleteScheduleGroup",
+          "scheduler:ListTagsForResource"
         ]
         Resource = "*"
       },
