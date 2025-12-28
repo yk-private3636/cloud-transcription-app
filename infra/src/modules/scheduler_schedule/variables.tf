@@ -2,6 +2,10 @@ variable "name" {
     type = string
 }
 
+variable "group_name" {
+    type = string
+}
+
 variable "target" {
     type = object({
         arn = string

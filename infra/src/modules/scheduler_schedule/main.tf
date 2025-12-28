@@ -1,5 +1,7 @@
 resource "aws_scheduler_schedule" "main" {
   name = var.name
+  group_name = var.group_name
+  
   target {
     arn = var.target.arn
     role_arn = var.target.role_arn

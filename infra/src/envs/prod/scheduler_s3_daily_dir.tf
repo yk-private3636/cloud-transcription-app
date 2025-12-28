@@ -1,11 +1,14 @@
 module "scheduler_s3_daily_dir" {
   source = "../../modules/scheduler_schedule"
 
-  name = local.scheduler_s3_daily_dir_name
+  name       = local.scheduler_s3_daily_dir_name
+  group_name = module.scheduler_schedule_group.name
+
   flexible_time_window = {
     mode                      = "OFF"
     maximum_window_in_minutes = null
   }
+
   schedule_expression          = "cron(0 0 * * ? *)"
   schedule_expression_timezone = var.timezone
   target = {
