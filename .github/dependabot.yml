@@ -63,6 +63,6 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "/terraform"
+    directory: "/infra"
     schedule:
       interval: "weekly"
