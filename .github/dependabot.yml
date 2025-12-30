@@ -10,16 +10,52 @@ updates:
     directory: "/event/src/s3_daily_dir"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "github.com/aws/aws-sdk-go-v2"
+        update-types:
+          - "version-update:semver-major"
+
+      - dependency-name: "github.com/aws/aws-sdk-go-v2/service/s3"
+        update-types:
+          - "version-update:semver-major"
+
+      - dependency-name: "github.com/aws/aws-lambda-go"
+        update-types:
+          - "version-update:semver-major"
 
   - package-ecosystem: "gomod"
     directory: "/event/src/transcription_job_reader"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "github.com/aws/aws-sdk-go-v2"
+        update-types:
+          - "version-update:semver-major"
+
+      - dependency-name: "github.com/aws/aws-sdk-go-v2/service/transcribe"
+        update-types:
+          - "version-update:semver-major"
+
+      - dependency-name: "github.com/aws/aws-lambda-go"
+        update-types:
+          - "version-update:semver-major"
 
   - package-ecosystem: "gomod"
     directory: "/event/src/transcription_result_reader"
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "github.com/aws/aws-sdk-go-v2"
+        update-types:
+          - "version-update:semver-major"
+
+      - dependency-name: "github.com/aws/aws-sdk-go-v2/service/s3"
+        update-types:
+          - "version-update:semver-major"
+
+      - dependency-name: "github.com/aws/aws-lambda-go"
+        update-types:
+          - "version-update:semver-major"
 
   - package-ecosystem: "docker"
     directory: "/event"
@@ -27,6 +63,6 @@ updates:
       interval: "weekly"
 
   - package-ecosystem: "docker"
-    directory: "/terraform"
+    directory: "/infra"
     schedule:
       interval: "weekly"
