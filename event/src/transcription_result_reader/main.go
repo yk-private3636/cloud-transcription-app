@@ -46,7 +46,7 @@ func main() {
 	if strings.ToLower(os.Getenv("APP_ENV")) == "prod" {
 		lambda.Start(EventHandler)
 	} else {
-		event := module.FileContent("event.json")
+		event, _ := os.ReadFile("./event.json")
 		fmt.Println(EventHandler(context.Background(), event))
 	}
 }
