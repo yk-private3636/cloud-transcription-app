@@ -19,10 +19,19 @@ var (
 )
 
 func init() {
-	cfg, err := config.LoadDefaultConfig(context.TODO())
+	var opts []func(*config.LoadOptions) error
+
+	if strings.ToLower(os.Getenv("APP_ENV")) != "prod" {
+		opts = append(opts, config.WithSharedConfigProfile("local"))
+	}
+
+	cfg, err := config.LoadDefaultConfig(
+		context.TODO(),
+		opts...,
+	)
 
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatal(err.Error())
 	}
 
 	storage = module.NewStorage(
