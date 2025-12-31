@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+set -xe
 
 trap '[ $? -eq 0 ] || echo "An error occurred. Exiting."' EXIT
 
