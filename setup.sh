@@ -17,6 +17,7 @@ terraformSetup() {
 
 eventSetup() {
     cp -n ${1}/.env.example ${1}/.env
+    cp -n ${1}/aws.config.example ${1}/aws.config
     for main in $(ls -1 ${1}/src/*/main.go); do
         mainDir=$(dirname ${main})
 

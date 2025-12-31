@@ -2,3 +2,4 @@
 /event/**/event.json
 *.tfvars
 /**/.terraform
+aws.config

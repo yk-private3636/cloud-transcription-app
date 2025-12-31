@@ -4,6 +4,10 @@ FROM ${BASE_IMAGE} AS local
 
 WORKDIR /src
 
+RUN mkdir -p /root/.aws
+
+COPY ./aws.config /root/.aws/config
+
 ENTRYPOINT [ "tail", "-f", "/dev/null" ]
 
 
