@@ -69,7 +69,7 @@ eventSetup() {
 
 readonly SCRIPT_DIR=$(dirname "$(realpath "$0")")
 readonly GIT_DIR=${SCRIPT_DIR}/.git
-readonly GIT_HOOKS_SCRIPT_DIR=${SCRIPT_DIR}/git-hooks
+readonly GIT_HOOKS_SCRIPT_DIR=${SCRIPT_DIR}/.githooks
 readonly TERRAFORM_DIR=${SCRIPT_DIR}/infra
 readonly EVENT_DIR=${SCRIPT_DIR}/event
 
