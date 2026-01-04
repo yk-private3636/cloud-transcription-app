@@ -1,6 +1,9 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-set -e
+set -o errexit
+set -o errtrace
+set -o nounset
+set -o pipefail
 
 githooksSetup() {
     cp -a ${1}/* ${2}/hooks/
@@ -69,7 +72,7 @@ eventSetup() {
 
 readonly SCRIPT_DIR=$(dirname "$(realpath "$0")")
 readonly GIT_DIR=${SCRIPT_DIR}/.git
-readonly GIT_HOOKS_SCRIPT_DIR=${SCRIPT_DIR}/git-hooks
+readonly GIT_HOOKS_SCRIPT_DIR=${SCRIPT_DIR}/.githooks
 readonly TERRAFORM_DIR=${SCRIPT_DIR}/infra
 readonly EVENT_DIR=${SCRIPT_DIR}/event
 
