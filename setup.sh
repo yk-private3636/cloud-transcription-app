@@ -1,6 +1,9 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
-set -e
+set -o errexit
+set -o errtrace
+set -o nounset
+set -o pipefail
 
 githooksSetup() {
     cp -a ${1}/* ${2}/hooks/
