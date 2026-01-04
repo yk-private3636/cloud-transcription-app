@@ -2,7 +2,7 @@ services:
 
   event:
     container_name: event
-    image: cloud-transcription-app-event:local-latest
+    image: cloud-transcription-app-event:local
     build:
       context: ./event
       target: local
@@ -13,7 +13,7 @@ services:
 
   infra:
     container_name: infra
-    image: cloud-transcription-app-infra:local-latest
+    image: cloud-transcription-app-infra:local
     build:
       context: ./infra
     env_file:
