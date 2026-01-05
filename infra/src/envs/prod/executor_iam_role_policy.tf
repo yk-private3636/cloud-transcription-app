@@ -30,6 +30,8 @@ module "executor_role_policy" {
           "ecr:BatchDeleteImage",
           "ecr:getLifecyclePolicy",
           "ecr:PutLifecyclePolicy",
+          "ecr:TagResource",
+          "ecr:UntagResource",
         ]
         Resource = [
           module.ecr_repository.arn,
@@ -79,6 +81,8 @@ module "executor_role_policy" {
           "states:ValidateStateMachineDefinition",
           "states:CreateStateMachine",
           "states:UpdateStateMachine",
+          "states:TagResource",
+          "states:UntagResource",
         ]
         Resource = [
           module.sfn_state_machine.arn,
@@ -93,6 +97,8 @@ module "executor_role_policy" {
           "events:ListTargetsByRule",
           "events:PutRule",
           "events:PutTargets",
+          "events:TagResource",
+          "events:UntagResource",
         ]
         Resource = "*"
       },
@@ -106,7 +112,9 @@ module "executor_role_policy" {
           "scheduler:GetScheduleGroup",
           "scheduler:DeleteSchedule",
           "scheduler:DeleteScheduleGroup",
-          "scheduler:ListTagsForResource"
+          "scheduler:ListTagsForResource",
+          "scheduler:TagResource",
+          "scheduler:UntagResource",
         ]
         Resource = "*"
       },
@@ -120,6 +128,7 @@ module "executor_role_policy" {
           "lambda:AddPermission",
           "lambda:CreateFunction",
           "lambda:TagResource",
+          "lambda:UntagResource",
           "lambda:UpdateFunctionCode",
           "lambda:UpdateFunctionConfiguration",
           "lambda:RemovePermission",
