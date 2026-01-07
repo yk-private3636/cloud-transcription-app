@@ -32,6 +32,7 @@ module "executor_role_policy" {
           "ecr:PutLifecyclePolicy",
           "ecr:TagResource",
           "ecr:UntagResource",
+          "ecr:PutImageTagMutability",
         ]
         Resource = [
           module.ecr_repository.arn,
