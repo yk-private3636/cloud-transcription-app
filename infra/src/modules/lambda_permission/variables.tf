@@ -3,21 +3,21 @@
 # }
 
 variable "action" {
-    type = string
+  type = string
 }
 
 variable "function_name" {
-    type = string
+  type = string
 }
 
 variable "principal" {
-    type = string
+  type = string
 }
 
 variable "source_arn" {
-    type = string
+  type = string
 }
 
 variable "source_account" {
-    type = string
+  type = string
 }

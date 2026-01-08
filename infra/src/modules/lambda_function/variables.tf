@@ -1,30 +1,30 @@
 variable "name" {
-    type = string
+  type = string
 }
 
 variable "role_arn" {
-    type = string
+  type = string
 }
 
 variable "image_uri" {
-    type = string
+  type = string
 }
 
 variable "memory_size" {
-    type = number
+  type = number
 }
 
 variable "timeout" {
-    type = number
+  type = number
 }
 
 variable "architectures" {
-    type = list(string)
+  type = list(string)
 }
 
 variable "environment" {
-    type = object({
-        variables = map(string)
-    })
+  type = object({
+    variables = map(string)
+  })
 }
 

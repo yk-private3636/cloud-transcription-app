@@ -1,7 +1,7 @@
 variable "bucket_id" {
-    type = string
+  type = string
 }
 
 variable "eventbridge" {
-    type = bool
+  type = bool
 }

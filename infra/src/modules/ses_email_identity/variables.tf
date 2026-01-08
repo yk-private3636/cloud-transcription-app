@@ -1,3 +1,3 @@
 variable "email_address" {
-    type = string
+  type = string
 }

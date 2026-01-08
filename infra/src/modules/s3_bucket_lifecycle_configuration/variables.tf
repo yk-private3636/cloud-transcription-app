@@ -1,10 +1,10 @@
 variable "bucket_id" {
-    type = string
+  type = string
 }
 
 variable "lifecycle_rules" {
   type = list(object({
-    id = string
+    id     = string
     status = string
     expiration = object({
       days = number

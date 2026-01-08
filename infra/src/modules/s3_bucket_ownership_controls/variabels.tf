@@ -1,3 +1,3 @@
 variable "bucket_id" {
-    type = string
+  type = string
 }
