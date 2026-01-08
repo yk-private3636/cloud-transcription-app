@@ -33,6 +33,7 @@ module "executor_role_policy" {
           "ecr:TagResource",
           "ecr:UntagResource",
           "ecr:PutImageTagMutability",
+          "ecr:PutImageScanningConfiguration",
         ]
         Resource = [
           module.ecr_repository.arn,
