@@ -1,11 +1,11 @@
 variable "name" {
-  type        = string
+  type = string
 }
 
 variable "role_arn" {
-  type        = string
+  type = string
 }
 
 variable "asl_definition" {
-  type        = string
+  type = string
 }

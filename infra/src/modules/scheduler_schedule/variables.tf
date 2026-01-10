@@ -1,29 +1,29 @@
 variable "name" {
-    type = string
+  type = string
 }
 
 variable "group_name" {
-    type = string
+  type = string
 }
 
 variable "target" {
-    type = object({
-        arn = string
-        role_arn = string
-    })
+  type = object({
+    arn      = string
+    role_arn = string
+  })
 }
 
 variable "flexible_time_window" {
-    type = object({
-      maximum_window_in_minutes = number
-      mode                      = string
-    })
+  type = object({
+    maximum_window_in_minutes = number
+    mode                      = string
+  })
 }
 
 variable "schedule_expression" {
-    type = string
+  type = string
 }
 
 variable "schedule_expression_timezone" {
-    type = string
+  type = string
 }

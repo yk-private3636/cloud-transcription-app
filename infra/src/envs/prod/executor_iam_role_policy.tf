@@ -32,6 +32,8 @@ module "executor_role_policy" {
           "ecr:PutLifecyclePolicy",
           "ecr:TagResource",
           "ecr:UntagResource",
+          "ecr:PutImageTagMutability",
+          "ecr:PutImageScanningConfiguration",
         ]
         Resource = [
           module.ecr_repository.arn,
@@ -51,6 +53,8 @@ module "executor_role_policy" {
           "s3:PutObject",
           "s3:DeleteBucket",
           "s3:DeleteObject",
+          "s3:PutBucketOwnershipControls",
+          "s3:GetBucketOwnershipControls",
         ]
         Resource = [
           module.s3_bucket_transcribe_input.arn,

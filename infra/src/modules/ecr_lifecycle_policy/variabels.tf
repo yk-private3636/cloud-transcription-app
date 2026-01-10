@@ -1,7 +1,7 @@
 variable "repository_name" {
-    type = string
+  type = string
 }
 
 variable "lifecycle_policy_json" {
-    type = string
+  type = string
 }

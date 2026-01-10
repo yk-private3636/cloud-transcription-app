@@ -1,3 +1,3 @@
 resource "aws_ses_email_identity" "main" {
-    email = var.email_address
+  email = var.email_address
 }

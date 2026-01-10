@@ -1,15 +1,15 @@
 variable "rule_name" {
-    type = string
+  type = string
 }
 
 variable "target_id" {
-    type = string
+  type = string
 }
 
 variable "target_arn" {
-    type = string
+  type = string
 }
 
 variable "role_arn" {
-    type = string
+  type = string
 }

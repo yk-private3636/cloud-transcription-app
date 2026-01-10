@@ -1,7 +1,7 @@
 variable "url" {
-  type        = string  
+  type = string
 }
 
 variable "client_id_list" {
-    type = list(string)
+  type = list(string)
 }
