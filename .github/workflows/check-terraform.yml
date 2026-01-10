@@ -90,4 +90,4 @@ jobs:
 
       - name: Scan Terraform Plan with Trivy
         working-directory: infra/src/envs/prod
-        run: trivy config --severity HIGH,CRITICAL --exit-code 1 /tmp/tfplan
+        run: trivy config --severity HIGH,CRITICAL --ignorefile ./.trivyignore --exit-code 1 /tmp/tfplan
