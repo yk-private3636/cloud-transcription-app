@@ -24,7 +24,7 @@ RUN go mod tidy
 RUN go build -a -o ./main
 
 
-FROM alpine:3.23.2 AS prod
+FROM alpine:3.23.3 AS prod
 
 ARG BUILD_TARGET
 
