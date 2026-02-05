@@ -1,4 +1,4 @@
-ARG BASE_IMAGE=golang:1.25.5-alpine
+ARG BASE_IMAGE=golang:1.25.6-alpine
 
 FROM ${BASE_IMAGE} AS local
 
