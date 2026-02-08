@@ -1,0 +1,92 @@
+name: Deploy Infrastructure Workflow
+on:
+  workflow_call:
+    secrets:
+      GITHUB_PAT:
+        required: true
+      AWS_ACCOUNT_ID:
+        required: true
+      EXECUTOR_ROLE_ARN:
+        required: true
+      EXECUTOR_ROLE_PRINCIPAL_NAME:
+        required: true
+      NOTIFICATION_EMAIL_ADDRESS:
+        required: true
+      MODEL_ID:
+        required: true
+
+jobs:
+    deploy-infra:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v6
+            with:
+              token: ${{ secrets.GITHUB_PAT }}
+              fetch-depth: 0
+
+          - name: Detect changes folder
+            uses: dorny/paths-filter@v3
+            id: filter
+            with:
+              token: ${{ secrets.GITHUB_PAT }}
+              base: main
+              filters: |
+                infra:
+                  - './infra/src/**'
+
+          - name: Configure AWS Credentials for Japan region audience
+            if: steps.filter.outputs.infra == 'true'
+            uses: aws-actions/configure-aws-credentials@v5.1.0
+            with:
+              audience: sts.amazonaws.com
+              aws-region: ap-northeast-1
+              role-to-assume: ${{ secrets.EXECUTOR_ROLE_ARN }}
+
+          - name: Set Terraform version from Dockerfile
+            if: steps.filter.outputs.infra == 'true'
+            id: docker-terraform-version
+            working-directory: infra
+            run: |
+              echo "TERRAFORM_VERSION=$(grep -m 1 BASE_IMAGE ./Dockerfile | awk -F : '{print $2}' | awk -F - '{print $1}' | sed 's/^$/latest/')" >> "$GITHUB_OUTPUT"
+
+          - name: Setup Terraform
+            if: steps.filter.outputs.infra == 'true'
+            uses: hashicorp/setup-terraform@v3
+            with:
+              terraform_version: ${{ steps.docker-terraform-version.outputs.TERRAFORM_VERSION }}
+
+          - name: Setup terraform variables
+            if: steps.filter.outputs.infra == 'true'
+            working-directory: infra/src/envs/prod
+            run: |
+              cat << EOF > ./terraform.tfvars
+              env                                   = "prod"
+              project_name                          = "cloud-transcription-app"
+              aws_region                            = ["ap-northeast-1", "ap-northeast-3"]
+              aws_az                                = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
+              email_from_address                    = "${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}"
+              email_to_address                      = ["${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}"]
+              account_id                            = "${{ secrets.AWS_ACCOUNT_ID }}"
+              executor_role_arn                     = "${{ secrets.EXECUTOR_ROLE_ARN }}"
+              executor_role_principal_name          = "${{ secrets.EXECUTOR_ROLE_PRINCIPAL_NAME }}"
+              transcription_lang                    = "ja-JP"
+              timezone                              = "Asia/Tokyo"
+              bedrock_model_id                      = "${{ secrets.MODEL_ID }}"
+              EOF
+
+              for name in $(ls -1 ./event/src); do
+                current_image=$(aws lambda get-function --function-name prod-$(echo ${name//_/-}) --query=Code.ImageUri --output text | awk -F : '{print $2}')
+                echo "${name}_image_tag = \"${current_image}\"" >> ./terraform.tfvars
+              done
+
+          - name: Apply Terraform for Infra Deployment
+            if: steps.filter.outputs.infra == 'true'
+            working-directory: infra/src/envs/prod
+            run: |
+              terraform init -input=false -no-color
+              terraform apply -input=false -auto-approve -no-color
+
+          - name: Clean up terraform.tfvars
+            if: ${{ always() }}
+            run: rm -f ./infra/src/envs/prod/terraform.tfvars

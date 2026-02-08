@@ -1,0 +1,61 @@
+name: Check Event Workflow
+
+on:
+  workflow_call:
+    secrets:
+      GITHUB_PAT:
+        required: true
+
+jobs:
+  check-event:
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 30
+
+    strategy:
+      matrix:
+        group: [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GITHUB_PAT }}
+          fetch-depth: 1
+          sparse-checkout: 'event/'
+
+      - name: Set Go version from Dockerfile
+        id: docker-go-version
+        working-directory: event/
+        run: |
+          echo "GO_VERSION=$(grep -m 1 BASE_IMAGE ./Dockerfile | awk -F : '{print $2}' | awk -F - '{print $1}' | sed 's/^$/latest/')" >> "$GITHUB_OUTPUT"
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '${{ steps.docker-go-version.outputs.GO_VERSION }}'
+          cache: false
+
+      - name: Install Trivy
+        uses: aquasecurity/setup-trivy@v0.2.3
+        with:
+          version: v0.61.0
+
+      - name: Run Go tests
+        working-directory: event/src
+        run: |
+          pwd=$(pwd)
+          for target in $(ls -1 | grep -n ^ | grep ${{ matrix.group }}: | awk -F : '{print $2}'); do
+            if [ -d ./${target}/tests ]; then
+                cd ${target}
+                go test -v ./tests/...
+                cd $pwd
+            fi
+          done
+
+      - name: Security scan changed event targets
+        run: |
+          for target in $(ls -1 ./event/src | grep -n ^ | grep ${{ matrix.group }}: | awk -F : '{print $2}'); do
+            docker build -t cloud-transcription-app:${target}-latest --target prod --build-arg BUILD_TARGET=${target} --provenance=false ./event
+            trivy image --severity HIGH,CRITICAL --exit-code 1 cloud-transcription-app:${target}-latest
+          done
