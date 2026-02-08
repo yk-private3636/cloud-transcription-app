@@ -1,0 +1,124 @@
+name: Deploy Event Workflow
+on:
+  workflow_call:
+    secrets:
+      GITHUB_PAT:
+        required: true
+      AWS_ACCOUNT_ID:
+        required: true
+      EXECUTOR_ROLE_ARN:
+        required: true
+      EXECUTOR_ROLE_PRINCIPAL_NAME:
+        required: true
+      NOTIFICATION_EMAIL_ADDRESS:
+        required: true
+      MODEL_ID:
+        required: true
+
+jobs:
+    deploy-event:
+        runs-on: ubuntu-latest
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v6
+            with:
+              token: ${{ secrets.GITHUB_PAT }}
+              fetch-depth: 0
+
+          - name: Detect changes folder
+            uses: dorny/paths-filter@v3
+            id: filter
+            with:
+              token: ${{ secrets.GITHUB_PAT }}
+              base: main
+              filters: |
+                event:
+                  - './event/src/**'
+                  - './event/Dockerfile'
+
+          - name: Configure AWS Credentials for Japan region audience
+            if: steps.filter.outputs.event == 'true'
+            uses: aws-actions/configure-aws-credentials@v5.1.0
+            with:
+              audience: sts.amazonaws.com
+              aws-region: ap-northeast-1
+              role-to-assume: ${{ secrets.EXECUTOR_ROLE_ARN }}
+
+          - name: Login to Amazon ECR
+            if: steps.filter.outputs.event == 'true'
+            uses: aws-actions/amazon-ecr-login@v2
+
+          - name: Setup Docker Buildx
+            if: steps.filter.outputs.event == 'true'
+            uses: docker/setup-buildx-action@v3
+
+          - name: Install Trivy
+            if: steps.filter.outputs.event == 'true'
+            uses: aquasecurity/setup-trivy@v0.2.3
+            with:
+              version: v0.61.0
+
+          - name: Set Terraform version from Dockerfile
+            if: steps.filter.outputs.event == 'true'
+            id: docker-terraform-version
+            working-directory: infra
+            run: |
+              echo "TERRAFORM_VERSION=$(grep -m 1 BASE_IMAGE ./Dockerfile | awk -F : '{print $2}' | awk -F - '{print $1}' | sed 's/^$/latest/')" >> "$GITHUB_OUTPUT"
+
+          - name: Setup Terraform
+            if: steps.filter.outputs.event == 'true'
+            uses: hashicorp/setup-terraform@v3
+            with:
+              terraform_version: ${{ steps.docker-terraform-version.outputs.TERRAFORM_VERSION }}
+
+          - name: Build and Push Event Docker Images
+            if: steps.filter.outputs.event == 'true'
+            run: |
+              touch /tmp/terraform_event_vars.txt
+              for target in $(ls -1 ./event/src); do
+                git diff --name-only HEAD^..HEAD | grep -e ^event/Dockerfile -e ^event/src/${target} || continue
+                docker build -t cloud-transcription-app:${target}-${{ github.sha }} --target prod --build-arg BUILD_TARGET=${target} --provenance=false ./event
+                trivy image --severity HIGH,CRITICAL --exit-code 1 cloud-transcription-app:${target}-${{ github.sha }}
+                docker tag cloud-transcription-app:${target}-${{ github.sha }} ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-1.amazonaws.com/prod-cloud-transcription-app:${target}-${{ github.sha }}
+                docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-northeast-1.amazonaws.com/prod-cloud-transcription-app:${target}-${{ github.sha }}
+                echo ${target}_image_tag=${target}-${{ github.sha }} >> /tmp/terraform_event_vars.txt
+              done
+
+          - name: Setup terraform variables
+            if: steps.filter.outputs.event == 'true'
+            working-directory: infra/src/envs/prod
+            run: |
+              cat << EOF > ./terraform.tfvars
+              env                                   = "prod"
+              project_name                          = "cloud-transcription-app"
+              aws_region                            = ["ap-northeast-1", "ap-northeast-3"]
+              aws_az                                = ["ap-northeast-1a", "ap-northeast-1c", "ap-northeast-1d"]
+              email_from_address                    = "${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}"
+              email_to_address                      = ["${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}"]
+              account_id                            = "${{ secrets.AWS_ACCOUNT_ID }}"
+              executor_role_arn                     = "${{ secrets.EXECUTOR_ROLE_ARN }}"
+              executor_role_principal_name          = "${{ secrets.EXECUTOR_ROLE_PRINCIPAL_NAME }}"
+              transcription_lang                    = "ja-JP"
+              timezone                              = "Asia/Tokyo"
+              bedrock_model_id                      = "${{ secrets.MODEL_ID }}"
+              EOF
+
+              for name in $(ls -1 ${{ github.workspace }}/event/src); do
+                current_image=$(aws lambda get-function --function-name prod-$(echo ${name//_/-}) --query=Code.ImageUri --output text | awk -F : '{print $2}')
+                echo "${name}_image_tag = \"${current_image}\"" >> ./terraform.tfvars
+              done
+
+              for event_var in $(cat /tmp/terraform_event_vars.txt); do
+                echo "${event_var}" >> ./terraform.tfvars
+              done
+
+          - name: Apply Terraform for Event Deployment
+            if: steps.filter.outputs.event == 'true'
+            working-directory: infra/src/envs/prod
+            run: |
+              terraform init -input=false -no-color
+              terraform apply -input=false -auto-approve -no-color
+
+          - name: Clean up terraform.tfvars
+            if: ${{ always() }}
+            run: rm -f ./infra/src/envs/prod/terraform.tfvars

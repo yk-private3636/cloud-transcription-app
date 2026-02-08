@@ -33,7 +33,7 @@ data "aws_iam_policy_document" "executor_assume_role_policy" {
     condition {
       test     = "StringLike"
       variable = "${split("/", module.github_actions_openid_connect_provider.arn)[length(split("/", module.github_actions_openid_connect_provider.arn)) - 1]}:sub"
-      values   = ["repo:${var.github_owner}/${var.github_repo}:*"]
+      values   = ["repo:yk-private3636/cloud-transcription-app:*"]
     }
   }
 }

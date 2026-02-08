@@ -1,0 +1,32 @@
+name: Deployer
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci.yml
+    secrets:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      EXECUTOR_ROLE_ARN: ${{ secrets.EXECUTOR_ROLE_ARN }}
+      EXECUTOR_ROLE_PRINCIPAL_NAME: ${{ secrets.EXECUTOR_ROLE_PRINCIPAL_NAME }}
+      NOTIFICATION_EMAIL_ADDRESS: ${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}
+      MODEL_ID: ${{ secrets.MODEL_ID }}
+
+  cd:
+    uses: ./.github/workflows/cd.yml
+    needs: ci
+    secrets:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+      EXECUTOR_ROLE_ARN: ${{ secrets.EXECUTOR_ROLE_ARN }}
+      EXECUTOR_ROLE_PRINCIPAL_NAME: ${{ secrets.EXECUTOR_ROLE_PRINCIPAL_NAME }}
+      NOTIFICATION_EMAIL_ADDRESS: ${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}
+      MODEL_ID: ${{ secrets.MODEL_ID }}

@@ -1,0 +1,39 @@
+name: CD Workflow
+
+on:
+    workflow_call:
+      secrets:
+        GITHUB_PAT:
+          required: true
+        AWS_ACCOUNT_ID:
+          required: true
+        EXECUTOR_ROLE_ARN:
+          required: true
+        EXECUTOR_ROLE_PRINCIPAL_NAME:
+          required: true
+        NOTIFICATION_EMAIL_ADDRESS:
+          required: true
+        MODEL_ID:
+          required: true
+
+jobs:
+    deploy-infra:
+        uses: ./.github/workflows/deploy-infra.yml
+        secrets:
+            GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+            AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+            EXECUTOR_ROLE_ARN: ${{ secrets.EXECUTOR_ROLE_ARN }}
+            EXECUTOR_ROLE_PRINCIPAL_NAME: ${{ secrets.EXECUTOR_ROLE_PRINCIPAL_NAME }}
+            NOTIFICATION_EMAIL_ADDRESS: ${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}
+            MODEL_ID: ${{ secrets.MODEL_ID }}
+
+    deploy-event:
+        uses: ./.github/workflows/deploy-event.yml
+        needs: deploy-infra
+        secrets:
+            GITHUB_PAT: ${{ secrets.GITHUB_PAT }}
+            AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+            EXECUTOR_ROLE_ARN: ${{ secrets.EXECUTOR_ROLE_ARN }}
+            EXECUTOR_ROLE_PRINCIPAL_NAME: ${{ secrets.EXECUTOR_ROLE_PRINCIPAL_NAME }}
+            NOTIFICATION_EMAIL_ADDRESS: ${{ secrets.NOTIFICATION_EMAIL_ADDRESS }}
+            MODEL_ID: ${{ secrets.MODEL_ID }}

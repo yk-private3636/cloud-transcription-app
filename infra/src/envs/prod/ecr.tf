@@ -1,7 +1,10 @@
-module "ecr_lifecycle_policy" {
-  source = "../../modules/ecr_lifecycle_policy"
+module "ecr" {
+  source = "../../modules/ecr"
 
-  repository_name = module.ecr_repository.name
+  name                 = local.ecr_repository_name
+  image_tag_mutability = "IMMUTABLE"
+  scan_on_push         = true
+  force_delete         = false
   lifecycle_policy_json = jsonencode({
     "rules" = [
       {
