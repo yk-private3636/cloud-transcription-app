@@ -10,8 +10,6 @@ on:
         required: true
       AWS_ACCOUNT_ID:
         required: true
-      TFSTATE_S3_BUCKET_ARN:
-        required: true
       NOTIFICATION_EMAIL_ADDRESS:
         required: true
       MODEL_ID:
@@ -73,9 +71,6 @@ jobs:
               transcription_lang                    = "ja-JP"
               timezone                              = "Asia/Tokyo"
               bedrock_model_id                      = "${{ secrets.MODEL_ID }}"
-              github_owner                          = "${{ github.repository_owner }}"
-              github_repo                           = "$(echo ${{ github.repository }} | awk -F / '{print $2}')"
-              s3_tfstate_arn                        = "${{ secrets.TFSTATE_S3_BUCKET_ARN }}"
               EOF
               
           - name: Set Terraform version from Dockerfile

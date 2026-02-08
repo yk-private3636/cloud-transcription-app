@@ -71,9 +71,6 @@ jobs:
           transcription_lang                    = "ja-JP"
           timezone                              = "Asia/Tokyo"
           bedrock_model_id                      = "${{ secrets.MODEL_ID }}"
-          github_owner                          = "${{ github.repository_owner }}"
-          github_repo                           = "$(echo ${{ github.repository }} | awk -F / '{print $2}')"
-          s3_tfstate_arn                        = "${{ secrets.TFSTATE_S3_BUCKET_ARN }}"
           EOF
 
       - name: Terraform Init

@@ -85,14 +85,3 @@ variable "bedrock_model_id" {
   type = string
 }
 
-variable "github_owner" {
-  type = string
-}
-
-variable "github_repo" {
-  type = string
-}
-
-variable "s3_tfstate_arn" {
-  type = string
-}

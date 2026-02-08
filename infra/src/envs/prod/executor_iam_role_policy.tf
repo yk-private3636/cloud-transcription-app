@@ -72,8 +72,8 @@ module "executor_role_policy" {
           "s3:DeleteObject",
         ]
         Resource = [
-          var.s3_tfstate_arn,
-          "${var.s3_tfstate_arn}/*",
+          "arn:aws:s3:::cloud-transcription-app-tfstate",
+          "arn:aws:s3:::cloud-transcription-app-tfstate/*",
         ]
       },
       {
