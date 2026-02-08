@@ -3,7 +3,7 @@ module "s3_daily_dir_function" {
 
   name          = local.lambda_function_s3_daily_dir_name
   role_arn      = module.lambda_s3_daily_dir_iam_role.arn
-  image_uri     = "${module.ecr_repository.repository_url}:${var.s3_daily_dir_image_tag}"
+  image_uri     = "${module.ecr.repository_url}:${var.s3_daily_dir_image_tag}"
   memory_size   = 128
   timeout       = 180
   architectures = ["x86_64"]

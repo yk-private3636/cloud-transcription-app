@@ -36,8 +36,8 @@ module "executor_role_policy" {
           "ecr:PutImageScanningConfiguration",
         ]
         Resource = [
-          module.ecr_repository.arn,
-          "${module.ecr_repository.arn}/*"
+          module.ecr.arn,
+          "${module.ecr.arn}/*"
         ]
       },
       {

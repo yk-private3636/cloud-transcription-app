@@ -3,7 +3,7 @@ module "transcription_result_reader_function" {
 
   name          = local.lambda_function_transcription_result_reader_name
   role_arn      = module.lambda_transcription_result_reader_iam_role.arn
-  image_uri     = "${module.ecr_repository.repository_url}:${var.transcription_result_reader_image_tag}"
+  image_uri     = "${module.ecr.repository_url}:${var.transcription_result_reader_image_tag}"
   memory_size   = 256
   timeout       = 900
   architectures = ["x86_64"]
