@@ -31,7 +31,7 @@ ARG BUILD_TARGET
 WORKDIR /src
 
 RUN apk update && \
-apk add tzdata
+    apk add tzdata
 
 RUN ln -s /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 
