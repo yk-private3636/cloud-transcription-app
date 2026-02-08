@@ -75,7 +75,7 @@ jobs:
               bedrock_model_id                      = "${{ secrets.MODEL_ID }}"
               EOF
 
-              for name in $(ls -1 ./event/src); do
+              for name in $(ls -1 ${{ github.workspace }}/event/src); do
                 current_image=$(aws lambda get-function --function-name prod-$(echo ${name//_/-}) --query=Code.ImageUri --output text | awk -F : '{print $2}')
                 echo "${name}_image_tag = \"${current_image}\"" >> ./terraform.tfvars
               done
