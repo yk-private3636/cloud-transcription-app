@@ -77,9 +77,9 @@ jobs:
               touch /tmp/terraform_event_vars.txt
               for target in $(ls -1 ./event/src); do
                 status=0
-                git diff --name-only HEAD^..HEAD | grep -e ^event/Dockerfile -e ^event/src/${target} || status=1
-                if [ ${status} -eq 1 ]; then
-                  echo ${target}_image_tag=$(aws lambda get-function --function-name prod-$(echo ${name//_/-}) --query=Code.ImageUri --output text | awk -F : '{print $2}') >> /tmp/terraform_event_vars.txt
+                git diff --name-only HEAD^..HEAD | grep -e ^event/Dockerfile -e ^event/src/${target} || status=$?
+                if [ ${status} -ne 0 ]; then
+                  echo ${target}_image_tag=\"$(aws lambda get-function --function-name prod-$(echo ${name//_/-}) --query=Code.ImageUri --output text | awk -F : '{print $2}')\" >> /tmp/terraform_event_vars.txt
                   continue
                 fi
                 docker build -t cloud-transcription-app:${target}-${{ github.sha }} --target prod --build-arg BUILD_TARGET=${target} --provenance=false ./event
