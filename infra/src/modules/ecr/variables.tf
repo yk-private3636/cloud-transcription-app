@@ -23,3 +23,7 @@ variable "force_delete" {
 variable "lifecycle_policy_json" {
   type = string
 }
+
+variable "repository_policy_json" {
+  type = string
+}

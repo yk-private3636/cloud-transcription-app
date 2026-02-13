@@ -16,3 +16,8 @@ resource "aws_ecr_lifecycle_policy" "main" {
   repository = aws_ecr_repository.main.name
   policy     = var.lifecycle_policy_json
 }
+
+resource "aws_ecr_repository_policy" "main" {
+  repository = aws_ecr_repository.main.name
+  policy     = var.repository_policy_json
+}
