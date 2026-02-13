@@ -28,16 +28,19 @@ module "executor_role_policy" {
           "ecr:CompleteLayerUpload",
           "ecr:BatchCheckLayerAvailability",
           "ecr:BatchDeleteImage",
-          "ecr:getLifecyclePolicy",
+          "ecr:GetLifecyclePolicy",
           "ecr:PutLifecyclePolicy",
           "ecr:TagResource",
           "ecr:UntagResource",
           "ecr:PutImageTagMutability",
           "ecr:PutImageScanningConfiguration",
+          "ecr:SetRepositoryPolicy",
+          "ecr:GetRepositoryPolicy",
+          "ecr:DeleteRepositoryPolicy",
         ]
         Resource = [
-          module.ecr.arn,
-          "${module.ecr.arn}/*"
+          "arn:aws:ecr:${var.aws_region[0]}:${var.account_id}:repository/${local.name}",
+          "arn:aws:ecr:${var.aws_region[0]}:${var.account_id}:repository/${local.name}/*"
         ]
       },
       {
@@ -57,10 +60,10 @@ module "executor_role_policy" {
           "s3:GetBucketOwnershipControls",
         ]
         Resource = [
-          module.s3_bucket_transcribe_input.arn,
-          "${module.s3_bucket_transcribe_input.arn}/*",
-          module.s3_bucket_transcribe_output.arn,
-          "${module.s3_bucket_transcribe_output.arn}/*",
+          "arn:aws:s3:::${local.s3_bucket_transcribe_input_name}",
+          "arn:aws:s3:::${local.s3_bucket_transcribe_input_name}/*",
+          "arn:aws:s3:::${local.s3_bucket_transcribe_output_name}",
+          "arn:aws:s3:::${local.s3_bucket_transcribe_output_name}/*",
         ]
       },
       {
@@ -72,8 +75,8 @@ module "executor_role_policy" {
           "s3:DeleteObject",
         ]
         Resource = [
-          "arn:aws:s3:::cloud-transcription-app-tfstate",
-          "arn:aws:s3:::cloud-transcription-app-tfstate/*",
+          "arn:aws:s3:::${var.project_name}-tfstate",
+          "arn:aws:s3:::${var.project_name}-tfstate/*",
         ]
       },
       {
@@ -87,11 +90,19 @@ module "executor_role_policy" {
           "states:UpdateStateMachine",
           "states:TagResource",
           "states:UntagResource",
+          "states:DeleteStateMachine",
         ]
         Resource = [
-          module.sfn_state_machine.arn,
-          "${module.sfn_state_machine.arn}/*"
+          "arn:aws:states:${var.aws_region[0]}:${var.account_id}:stateMachine:${local.sfn_state_machine_name}",
+          "arn:aws:states:${var.aws_region[0]}:${var.account_id}:stateMachine:${local.sfn_state_machine_name}/*"
         ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "states:ValidateStateMachineDefinition",
+        ]
+        Resource = "*"
       },
       {
         Effect = "Allow"
@@ -103,6 +114,8 @@ module "executor_role_policy" {
           "events:PutTargets",
           "events:TagResource",
           "events:UntagResource",
+          "events:RemoveTargets",
+          "events:DeleteRule",
         ]
         Resource = "*"
       },
@@ -136,12 +149,13 @@ module "executor_role_policy" {
           "lambda:UpdateFunctionCode",
           "lambda:UpdateFunctionConfiguration",
           "lambda:RemovePermission",
+          "lambda:DeleteFunction"
         ]
         Resource = [
-          module.s3_daily_dir_function.arn,
-          module.gen_nano_timestamp_function.arn,
-          module.transcription_job_reader_function.arn,
-          module.transcription_result_reader_function.arn,
+          "arn:aws:lambda:${var.aws_region[0]}:${var.account_id}:function:${local.lambda_function_s3_daily_dir_name}",
+          "arn:aws:lambda:${var.aws_region[0]}:${var.account_id}:function:${local.lambda_function_gen_nano_timestamp_name}",
+          "arn:aws:lambda:${var.aws_region[0]}:${var.account_id}:function:${local.lambda_function_transcription_job_reader_name}",
+          "arn:aws:lambda:${var.aws_region[0]}:${var.account_id}:function:${local.lambda_function_transcription_result_reader_name}",
         ]
       },
       {
@@ -162,8 +176,8 @@ module "executor_role_policy" {
           "iam:*",
         ]
         Resource = [
-          "arn:aws:iam::${var.account_id}:role/prod-cloud-transcription-app-*",
-          module.github_actions_openid_connect_provider.arn,
+          "arn:aws:iam::${var.account_id}:role/${local.name}-*",
+          "arn:aws:iam::${var.account_id}:oidc-provider/token.actions.githubusercontent.com",
         ]
       }
     ]
