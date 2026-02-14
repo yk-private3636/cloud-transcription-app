@@ -5,6 +5,23 @@ module "ecr" {
   image_tag_mutability = "IMMUTABLE"
   scan_on_push         = true
   force_delete         = false
+  repository_policy_json = jsonencode({
+    "Version" = "2012-10-17"
+    "Statement" = [
+      {
+        "Effect" = "Allow"
+        "Principal" = {
+          "Service" = [
+            "lambda.amazonaws.com",
+          ]
+        }
+        "Action" = [
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+        ]
+      }
+    ]
+  })
   lifecycle_policy_json = jsonencode({
     "rules" = [
       {
